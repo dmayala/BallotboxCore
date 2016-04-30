@@ -8,9 +8,10 @@ using Ballotbox.Database;
 namespace Ballotbox.Migrations
 {
     [DbContext(typeof(BallotboxContext))]
-    partial class BallotboxContextModelSnapshot : ModelSnapshot
+    [Migration("20160430225933_AddPollEntities")]
+    partial class AddPollEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348");

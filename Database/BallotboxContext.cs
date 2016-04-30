@@ -10,6 +10,15 @@ namespace Ballotbox.Database
 {
     public class BallotboxContext : IdentityDbContext<BallotboxUser>
     {
+        public DbSet<Poll> Polls { get; set; }
+        public DbSet<Choice> Choices { get; set; }
+        public DbSet<Vote> Votes { get; set; }
+
+        public BallotboxContext()
+        {
+            Database.EnsureCreated();
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
