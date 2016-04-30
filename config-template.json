@@ -1,0 +1,5 @@
+{
+  "Data": {
+    "BallotboxContextConnection": "User ID={USERNAME};Password={PASSWORD};Host={HOSTNAME}Port={PORTNO};Database={DBNAME};Pooling=true;Connection Lifetime=0;"
+  }
+}
