@@ -35,7 +35,6 @@ namespace Ballotbox
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
-            //Configuration["Data:DefaultConnection:ConnectionString"] = $@"Data Source={appEnv.ApplicationBasePath}/Ballotbox.db";
         }
 
         public static IConfigurationRoot Configuration { get; set; }
@@ -72,7 +71,7 @@ namespace Ballotbox
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseDatabaseErrorPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
