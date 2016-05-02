@@ -9,5 +9,5 @@ gulp.task('sass', function () {
             './node_modules/bootstrap-sass/assets/stylesheets'
           ]
       }))
-      .pipe(gulp.dest('./public/css'));
+      .pipe(gulp.dest('./wwwroot/css'));
 });
