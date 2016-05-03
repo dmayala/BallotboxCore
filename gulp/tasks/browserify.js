@@ -10,6 +10,7 @@
 var browserify = require('browserify');
 var babelify = require('babelify');
 var tsify = require('tsify');
+var debowerify = require('debowerify');
 var watchify = require('watchify');
 var bundleLogger = require('../util/bundleLogger');
 var gulp = require('gulp');
@@ -21,13 +22,14 @@ gulp.task('browserify', function () {
         // required watchify args
         cache: {}, packageCache: {}, fullPaths: true,
         // specify app entry point
-        entries: ['./app/index.tsx', './typings/browser.d.ts'],
+        entries: ['./app/index.tsx', './typings/browser.d.ts', './app/typings/custom.d.ts'],
         // file extensions
         extensions: ['.ts', '.tsx'],
         // Enable source maps
         debug: true
     })
       .plugin(tsify)
+      .transform(debowerify)
       .transform(babelify);
 
     var bundle = function () {

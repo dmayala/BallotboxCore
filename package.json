@@ -8,6 +8,7 @@
     "debowerify": "^1.4.1",
     "gulp": "^3.9.0",
     "gulp-concat": "2.5.2",
+    "gulp-concat-css": "^2.2.0",
     "gulp-cssmin": "0.1.7",
     "gulp-notify": "^2.2.0",
     "gulp-sass": "^2.3.1",
@@ -21,10 +22,16 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "axios": "^0.11.0",
     "bootstrap-sass": "^3.3.6",
+    "lodash": "^4.11.1",
     "react": "^15.0.2",
+    "react-bootstrap": "^0.29.3",
     "react-dom": "^15.0.2",
     "react-redux": "^4.4.5",
-    "redux": "^3.5.2"
+    "react-router": "^2.4.0",
+    "redux": "^3.5.2",
+    "redux-form": "^5.2.3",
+    "redux-promise": "^0.5.3"
   }
 }
