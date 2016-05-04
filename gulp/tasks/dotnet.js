@@ -18,7 +18,7 @@ var initBrowserSync = _.once(function () {
   });  
 });
 
-gulp.task('dotnet', function () {
+gulp.task('dotnet', [ 'build' ], function () {
   nodemon({
     watch: 'Controllers',
     ext: 'cs',
@@ -30,6 +30,6 @@ gulp.task('dotnet', function () {
     gutil.log('[Nodemon] ' + gutil.colors.green("'detected change, restarting'") + ' ...');
     setTimeout(function () {
       browserSync.reload({ stream: false });
-    }, 2500);
+    }, 3000);
   });
 });

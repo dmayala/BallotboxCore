@@ -2,6 +2,7 @@
 var sass = require('gulp-sass');
 var concatCss = require('gulp-concat-css');
 var handleErrors = require('../util/handleErrors');
+var browserSync = require('browser-sync');
 
 gulp.task('sass', function () {
     gulp.src('./app/stylesheets/**/*.scss')
@@ -12,5 +13,6 @@ gulp.task('sass', function () {
           outputStyle: 'compressed'
       }))
       .pipe(concatCss('app.css'))
-      .pipe(gulp.dest('./wwwroot/css'));
+      .pipe(gulp.dest('./wwwroot/css'))
+      .pipe(browserSync.stream());    
 });
