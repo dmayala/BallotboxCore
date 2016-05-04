@@ -5,14 +5,21 @@ var gutil = require('gulp-util');
 
 gulp.task('dotnet', ['build'], function () {
   nodemon({
-    watch: 'controllers',
+    watch: 'Controllers',
     ext: 'cs',
-    exec: 'dnx weblistener',
+    exec: 'dnx web',
     ignore: [ 'node_modules/', 'wwwroot/', 'app/' ]
   })
   .on('start', function () {
     browserSync({
-        proxy: 'localhost:5000',
+        proxy: {
+            target: 'localhost:5000',
+            proxyReq: [
+                function (proxyReq) {
+                  proxyReq.setHeader('Connection', 'keep-alive');
+                }
+            ]
+        },
         port: 5001
     });
   })

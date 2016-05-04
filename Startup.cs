@@ -63,7 +63,7 @@ namespace Ballotbox
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, BallotboxContextSeedData seeder, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public async void Configure(IApplicationBuilder app, IServiceProvider serviceProvider, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -104,7 +104,8 @@ namespace Ballotbox
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
+            
+            var seeder = serviceProvider.GetService<BallotboxContextSeedData>();
             await seeder.EnsureSeedDataAsync();
         }
 

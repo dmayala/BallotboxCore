@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "dnx Microsoft.AspNet.Server.Kestrel",
-    "build": "typings install && gulp build",
+    "build": "dnu restore && typings install && gulp build",
     "dev": "gulp watch",
     "postinstall": "npm run build"
   },
@@ -20,6 +20,7 @@
     "gulp-sass": "^2.3.1",
     "gulp-uglify": "1.2.0",
     "gulp-util": "^3.0.7",
+    "http-proxy-middleware": "^0.15.0",
     "nodemon": "^1.9.2",
     "pretty-hrtime": "^1.0.2",
     "require-dir": "^0.3.0",

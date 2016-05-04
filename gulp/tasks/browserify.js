@@ -1,13 +1,4 @@
-﻿/*
- *  browserify task 
- *  ----------------
- *  Bundle javascript things with browserify!
- *
- *  If the watch task is running, this uses watchify instead
- *  of browserify for faster bundling using caching.
- */
-
-var browserify = require('browserify');
+﻿var browserify = require('browserify');
 var babelify = require('babelify');
 var tsify = require('tsify');
 var debowerify = require('debowerify');
