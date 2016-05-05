@@ -1,8 +1,12 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import {Input, Button, Glyphicon, Alert} from 'react-bootstrap';
+
+import { addPoll } from '../actions';
 
 interface P {
   children?: React.ReactElement<any>[];
+  addPoll: Function
 }
 
 interface S {
@@ -11,14 +15,17 @@ interface S {
   success: boolean;
 }
 
-
 class AddPoll extends React.Component<P, S> {
-  
-  static contextTypes = {
-    router: React.PropTypes.object 
-  };
+
+  static contextTypes: React.ValidationMap<any> = {
+		router: React.PropTypes.object
+	};
 
   state = this._getClearState(); 
+  
+  context: {
+    router: ReactRouter.RouterOnContext;
+  };
   
   refs: {
     [string: string]: any;
@@ -58,7 +65,9 @@ class AddPoll extends React.Component<P, S> {
     if (name && choices && choices.length > 1) {
       let filled = choices.filter((choice) => { return choice != null; }); 
       if (filled.length === choices.length) {
-        //return this.context.flux.getActions('dashboard').addPoll(this.state);
+        return this.props.addPoll(this.state).then(() => {
+          this._onChange();
+        });
       }
     }
 
@@ -109,7 +118,7 @@ class AddPoll extends React.Component<P, S> {
 
         <form ref="addPoll">
           <h2>Add a New Poll</h2> 
-          <Input name="name" type="text" placeholder="Enter a question" value=""
+          <Input name="name" type="text" placeholder="Enter a question" value={this.state.name}
           onChange={this._onInputChange} /> 
           <hr />
           <h2>Choices</h2>
@@ -121,7 +130,7 @@ class AddPoll extends React.Component<P, S> {
           { choices }
         </form>
         <hr />
-        <Button bsStyle="primary" onClick={this._onSubmit} disabled={this.state.choices.length < 2}>
+        <Button onClick={this._onSubmit} bsStyle="primary" disabled={this.state.choices.length < 2}>
           <Glyphicon glyph="save" />
           &nbsp;Save New Poll
         </Button>
@@ -130,4 +139,4 @@ class AddPoll extends React.Component<P, S> {
   }
 }
 
-export default AddPoll;
+export default connect(null, { addPoll })(AddPoll);
