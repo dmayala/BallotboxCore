@@ -1,14 +1,18 @@
 import * as React from 'react';
+import Header from './Header';
+import Footer from './Footer';
 
-interface AppProps extends React.Props<any> {
-    children?: React.ReactElement<any>[];
+interface P {
+  children?: React.ReactElement<any>[];
 }
 
-export default class App extends React.Component<AppProps, void> {
+export default class App extends React.Component<P, {}> {
     render(): React.ReactElement<any> {
         return (
             <div>
-                {this.props.children}
+              <Header />
+              {this.props.children}
+              <Footer />
             </div>
         );
     }

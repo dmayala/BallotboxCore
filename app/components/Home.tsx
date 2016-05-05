@@ -4,7 +4,7 @@ import {Button} from 'react-bootstrap';
 
 class Home extends React.Component<{}, {}> {
 
-  render() {
+  render(): React.ReactElement<any> {
     const props = Object.assign({}, this.state, this.props);
     return (
       <div className="container" id="content">
@@ -13,12 +13,6 @@ class Home extends React.Component<{}, {}> {
             <div><h1>Ballotbox</h1>
               <p className="lead">Create custom polls with live results.</p>
               <Button bsStyle="success" bsSize="large">Sign up</Button>
-            </div>
-            <div style={{ display: 'none' }}>
-              <h1>Dashboard</h1>
-              <p className="lead">What would you like to do today?</p>
-              <button className="btn btn-lg btn-success">New Poll</button>
-              <button className="btn btn-lg btn-primary">My Polls</button>
             </div>
           </div>
         </header>
