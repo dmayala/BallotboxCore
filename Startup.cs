@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Ballotbox.Models;
 using Ballotbox.Database;
 using Ballotbox.Services;
+using Newtonsoft.Json.Serialization;
+using AutoMapper;
+using Ballotbox.ViewModels;
 
 namespace Ballotbox
 {
@@ -42,6 +45,12 @@ namespace Ballotbox
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc()
+                    .AddJsonOptions(opt =>
+                    {
+                        opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    });
+
             // Add framework services.
             services.AddEntityFramework()
                 .AddNpgsql()
@@ -54,8 +63,6 @@ namespace Ballotbox
 
             services.AddTransient<BallotboxContextSeedData>();
             services.AddScoped<IBallotboxRepository, BallotboxRepository>();
-
-            services.AddMvc();
             
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -95,6 +102,12 @@ namespace Ballotbox
             app.UseStaticFiles();
 
             app.UseIdentity();
+
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<Poll, PollViewModel>().ReverseMap();
+                config.CreateMap<Choice, ChoiceViewModel>().ReverseMap();
+            });
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
