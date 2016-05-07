@@ -107,6 +107,9 @@ namespace Ballotbox
             {
                 config.CreateMap<Poll, PollViewModel>().ReverseMap();
                 config.CreateMap<Choice, ChoiceViewModel>().ReverseMap();
+                config.CreateMap<BallotboxUser, BallotboxUserViewModel>().ReverseMap();
+                config.CreateMap<AddPollViewModel, PollViewModel>()
+                        .ForMember(dest => dest.Choices, opt => opt.MapFrom(src => src.Choices.Select(n => new Choice() { Name = n })));
             });
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715

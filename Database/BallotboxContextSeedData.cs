@@ -20,12 +20,13 @@ namespace Ballotbox.Database
 
         public async Task EnsureSeedDataAsync()
         {
-            if (await _userManager.FindByEmailAsync("bobbytables@example.com") == null)
+            if (await _userManager.FindByNameAsync("bobbytables") == null
+                && await _userManager.FindByEmailAsync("bobbytables@example.com") == null)
             {
                 // Add the user.
                 var newUser = new BallotboxUser()
                 {
-                    UserName = "bobbytables@example.com",                 
+                    UserName = "bobbytables",                 
                     Email = "bobbytables@example.com"
                 };
 
@@ -38,7 +39,7 @@ namespace Ballotbox.Database
                 var cokeOrPepsiPoll = new Poll()
                 {
                     Name = "Coke or Pepsi?",
-                    User = await _userManager.FindByEmailAsync("bobbytables@example.com"),
+                    User = await _userManager.FindByNameAsync("bobbytables"),
                     Choices = new List<Choice>()
                     {
                         new Choice() { Name = "Pepsi" },

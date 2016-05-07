@@ -28,7 +28,8 @@ namespace Ballotbox.Database
         {
             try
             {
-                return _context.Polls.Include(p => p.Choices).ToList();
+                return _context.Polls.Include(p => p.User)
+                                     .Include(p => p.Choices).ToList();
             }
             catch (Exception ex)
             {
