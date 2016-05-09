@@ -90,5 +90,19 @@ namespace Ballotbox.Controllers.Api
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed", ModelState = ModelState });
         }
+
+        [HttpDelete]
+        [Route("{pollId}")]
+        public JsonResult Delete(int pollId)
+        {
+            _repository.RemovePollById(pollId);
+            if (_repository.SaveAll())
+            {
+                Response.StatusCode = (int)HttpStatusCode.Created;
+                return Json(new { Id = pollId });
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed", ModelState = ModelState });
+        }
     }
 }

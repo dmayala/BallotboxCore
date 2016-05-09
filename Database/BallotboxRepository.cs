@@ -24,6 +24,14 @@ namespace Ballotbox.Database
             _context.Polls.Add(newPoll);
         }
 
+        public void RemovePollById(int pollId)
+        {
+            var poll = _context.Polls.Where(p => p.Id == pollId)
+                                     .Include(p => p.Choices)
+                                     .FirstOrDefault();
+            _context.Polls.Remove(poll);
+        }
+
         public IEnumerable<Poll> GetAllPolls()
         {
             try
