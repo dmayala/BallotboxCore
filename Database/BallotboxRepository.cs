@@ -38,6 +38,21 @@ namespace Ballotbox.Database
             }
         }
 
+        public IEnumerable<Poll> GetAllPollsByUserId(string userId)
+        {
+            try
+            {
+                return _context.Polls.Where(p => p.User.Id == userId)
+                                     .Include(p => p.User)
+                                     .Include(p => p.Choices).ToList();
+
+            } catch (Exception ex)
+            {
+                _logger.LogError("Could not get polls from database", ex);
+                return null;
+            }
+        }
+
         public bool SaveAll()
         {
             return _context.SaveChanges() > 0;

@@ -41,9 +41,19 @@ namespace Ballotbox.Controllers.Api
         public async Task<JsonResult> Get(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
-            // todo
-            //var results = Mapper.Map<IEnumerable<PollViewModel>>(_repository.GetAllPollsByUserId(user.Id));
-            return Json(user);
+            if (user != null)
+            {
+                var polls = _repository.GetAllPollsByUserId(user.Id);
+
+                if (polls != null)
+                {
+                    var results = Mapper.Map<IEnumerable<PollViewModel>>(polls);
+                    return Json(results);
+                }
+
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed" });
         }
 
 

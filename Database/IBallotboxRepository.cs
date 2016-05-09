@@ -9,6 +9,7 @@ namespace Ballotbox.Database
     public interface IBallotboxRepository
     {
         IEnumerable<Poll> GetAllPolls();
+        IEnumerable<Poll> GetAllPollsByUserId(string userId);
         void AddPoll(Poll newPoll);
         bool SaveAll();
     }
