@@ -42,12 +42,11 @@ namespace Ballotbox.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Json(model);
                 }
             }
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { Message = "Failed", ModelState = ModelState });
+            return Json(new { Message = "Failed", ModelState = ModelState.Values.SelectMany(v => v.Errors) });
         }
     }
 }

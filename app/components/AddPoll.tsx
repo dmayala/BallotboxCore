@@ -17,15 +17,7 @@ interface S {
 
 class AddPoll extends React.Component<P, S> {
 
-  static contextTypes: React.ValidationMap<any> = {
-		router: React.PropTypes.object
-	};
-
   state = this._getClearState(); 
-  
-  context: {
-    router: ReactRouter.RouterOnContext;
-  };
   
   refs: {
     [string: string]: any;
