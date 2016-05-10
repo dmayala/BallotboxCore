@@ -37,7 +37,7 @@ namespace Ballotbox.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return Json(new {});
+                    return Json(new { Username = model.Username });
                 }
                 else
                 {
@@ -47,6 +47,17 @@ namespace Ballotbox.Controllers
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed", ModelState = ModelState.Values.SelectMany(v => v.Errors) });
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult> Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                await _signInManager.SignOutAsync();
+            }
+
+            return Json(new {});
         }
     }
 }
