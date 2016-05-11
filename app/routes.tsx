@@ -5,6 +5,7 @@ import App from './components/App';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
 import AddPoll from './components/AddPoll';
+import MyPolls from './components/MyPolls';
 import Login from './components/Login';
 
 export default (
@@ -13,6 +14,7 @@ export default (
     <Route path="dashboard" component={Dashboard}>
       <IndexRoute component={AddPoll as any} />
       <Route path="new" component={AddPoll as any} />
+      <Route path="polls" component={MyPolls} />
     </Route>
     <Route path="login" component={Login}></Route>
   </Route>
