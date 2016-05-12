@@ -1,4 +1,4 @@
-import { LOGIN_USER } from '../actions/index';
+import { LOGIN_USER, LOGOUT_USER } from '../actions/index';
 
 const INITIAL_STATE = {
   username: ''
@@ -10,6 +10,8 @@ export default function(state = INITIAL_STATE, action) {
       if (action.payload.status === 200) {
         return { username: action.payload.data.username };
       }
+    case LOGOUT_USER:
+      return INITIAL_STATE;
     default:
       return state;
   }

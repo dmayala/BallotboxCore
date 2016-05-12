@@ -4,7 +4,7 @@ import {LinkContainer} from 'react-router-bootstrap';
 import {Navbar, Nav, DropdownButton, MenuItem, NavItem} from 'react-bootstrap';
 
 import { connect } from 'react-redux';
-import { loginUser } from '../actions';
+import { loginUser, logoutUser } from '../actions';
 
 import LoginModal from '../components/LoginModal';
 
@@ -15,13 +15,22 @@ interface S {
 
 interface P {
   loginUser(details): Promise<any>;
+  logoutUser(): Promise<any>;
   user: string;
 }
 
 class Header extends React.Component<P, S> {
   
+  static contextTypes: React.ValidationMap<any> = {
+		router: React.PropTypes.object
+	};
+  
+  context: {
+    router: ReactRouter.RouterOnContext;
+  };
+  
   state = this._getState();
-
+  
   private _getState(): S {
     return {
       showLoginModal: false,
@@ -39,7 +48,9 @@ class Header extends React.Component<P, S> {
   
   private _onLogout = (e) => {
     e.preventDefault();
-    //this.props.logoutUser();
+    this.props.logoutUser().then((): void => {
+      this.context.router.push('/');
+    });
   };
   
   private _loggedInNav = () => {
@@ -89,4 +100,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { loginUser })(Header);
+export default connect(mapStateToProps, { loginUser, logoutUser })(Header);

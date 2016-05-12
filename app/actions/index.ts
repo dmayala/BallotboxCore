@@ -4,8 +4,9 @@ export const FETCH_POLLS = 'FETCH_POLLS';
 export const ADD_POLL = 'ADD_POLL';
 export const REMOVE_POLL = 'REMOVE_POLL';
 
-
 export const LOGIN_USER = 'LOGIN_USER';
+export const LOGOUT_USER = 'LOGOUT_USER';
+
 
 export function fetchPolls(username: string) {
   const request = axios.get(`/api/polls/${username}`); 
@@ -31,10 +32,8 @@ export function removePoll(id: number) {
   return {
     type: REMOVE_POLL,
     payload: request
-  }
-  
+  };
 }
-
 
 export function loginUser(details) {
   const request = axios.post('/auth/login', details); 
@@ -45,3 +44,11 @@ export function loginUser(details) {
   };
 };
 
+export function logoutUser() {
+  const request = axios.post('/auth/logout'); 
+
+  return {
+    type: LOGOUT_USER,
+    payload: request
+  };
+}
