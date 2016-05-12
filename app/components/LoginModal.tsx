@@ -4,16 +4,15 @@ import { Modal, Input, Button } from 'react-bootstrap';
 
 import { loginUser } from '../actions';
 
-
-interface P extends JSX.IntrinsicClassAttributes<React.HTMLProps<HTMLDivElement>> {
-    show: boolean;
-    onHide: Function;
-    loginUser?: Function;
+interface P {
+  show: boolean;
+  onHide(e?: React.SyntheticEvent): void;
+  loginUser(details: S): Promise<any>;
 }
 
 interface S {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
 
 class LoginModal extends React.Component<P, S> {

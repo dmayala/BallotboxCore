@@ -5,11 +5,12 @@ export const FETCH_POLLS = 'FETCH_POLLS';
 
 export const LOGIN_USER = 'LOGIN_USER';
 
-export function fetchPolls() {
-  
+export function fetchPolls(username: string) {
+  const request = axios.get(`/api/polls/${username}`); 
+
   return {
     type: FETCH_POLLS,
-    payload: { data: null }
+    payload: request
   };
 }
 

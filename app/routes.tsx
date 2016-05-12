@@ -4,9 +4,9 @@ import { Route, IndexRoute } from 'react-router';
 import App from './components/App';
 import Home from './components/Home';
 import Dashboard from './components/Dashboard';
-import AddPoll from './components/AddPoll';
-import MyPolls from './components/MyPolls';
-import Login from './components/Login';
+import AddPoll from './containers/AddPoll';
+import MyPolls from './containers/MyPolls';
+import Login from './containers/Login';
 
 export default (
   <Route path="/" component={App}>

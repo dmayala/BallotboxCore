@@ -6,26 +6,26 @@ import {sortBy} from 'lodash';
 import { removePoll, fetchPolls } from '../actions';
 
 interface Poll {
-    id: number;
-    name: string;
-    choices: Choice[]
+  id: number;
+  name: string;
+  choices: Choice[]
 }
 
 interface Choice {
-    id: number;
-    name: string;
-    votes: Vote[]
+  id: number;
+  name: string;
+  votes: Vote[]
 }
 
 interface Vote {
-    id: number;
+  id: number;
 }
 
-interface P {
-  children?: React.ReactElement<any>[];
-  fetchPolls: Function;
-  removePoll: Function;
+interface P extends ReactRouter.RouteComponentProps<{}, {}> {
+  fetchPolls(username: string): void;
+  removePoll(pollId: number): void;
   polls: Poll[];
+  user: string;
 }
 
 interface S {
@@ -44,7 +44,7 @@ class MyPolls extends React.Component<P, S> {
   }
   
   componentWillMount() {
-    this.props.fetchPolls();
+    this.props.fetchPolls(this.props.user);
   }
   
   private _getState(): S {
@@ -130,7 +130,8 @@ class MyPolls extends React.Component<P, S> {
 
 function mapStateToProps(state) {
   return {
-    polls: state.polls.all
+    polls: state.polls.all,
+    user: state.auth.username
   };
 }
 

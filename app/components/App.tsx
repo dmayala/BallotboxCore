@@ -1,9 +1,8 @@
 import * as React from 'react';
-import Header from './Header';
+import Header from '../containers/Header';
 import Footer from './Footer';
 
-interface P {
-  children?: React.ReactElement<any>[];
+interface P extends ReactRouter.RouteComponentProps<{}, {}> {
 }
 
 export default class App extends React.Component<P, {}> {

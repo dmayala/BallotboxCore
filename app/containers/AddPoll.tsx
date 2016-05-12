@@ -4,9 +4,8 @@ import {Input, Button, Glyphicon, Alert} from 'react-bootstrap';
 
 import { addPoll } from '../actions';
 
-interface P {
-  children?: React.ReactElement<any>[];
-  addPoll: Function
+interface P extends ReactRouter.RouteComponentProps<{}, {}> {
+  addPoll(state: S): Promise<any>
 }
 
 interface S {

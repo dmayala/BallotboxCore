@@ -5,13 +5,16 @@ import {Input, Button, Alert} from 'react-bootstrap';
 import { loginUser } from '../actions';
 
 interface P {    
-    loginUser: Function;
+    loginUser(details: ILoginDetails): Promise<any>;
 }
 
-interface S {
-    username: string;
-    password: string;
-    success: boolean;
+interface ILoginDetails {
+  username: string;
+  password: string;
+}
+
+interface S extends ILoginDetails {
+  success: boolean;
 }
 
 class Login extends React.Component<P, S> {

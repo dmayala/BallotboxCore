@@ -6,8 +6,7 @@ import {Navbar, Nav, DropdownButton, MenuItem, NavItem} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions';
 
-import LoginModal from './LoginModal';
-
+import LoginModal from '../components/LoginModal';
 
 interface S {
     showLoginModal: boolean;
@@ -15,12 +14,12 @@ interface S {
 }
 
 interface P {
-  loginUser: Function;
+  loginUser(details): Promise<any>;
   user: string;
 }
 
 class Header extends React.Component<P, S> {
-
+  
   state = this._getState();
 
   private _getState(): S {
