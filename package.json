@@ -44,6 +44,7 @@
     "redux-form": "^5.2.3",
     "redux-persist": "^3.1.1",
     "redux-promise": "^0.5.3",
-    "setimmediate": "^1.0.4"
+    "setimmediate": "^1.0.4",
+    "validator": "^5.2.0"
   }
 }

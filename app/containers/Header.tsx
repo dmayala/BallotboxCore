@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { loginUser, logoutUser } from '../actions';
 
 import LoginModal from '../components/LoginModal';
+import SignupModal from '../components/SignupModal';
 
 interface S {
     showLoginModal: boolean;
@@ -88,7 +89,8 @@ class Header extends React.Component<P, S> {
           <Nav navbar pullRight>
           </Nav>
         </Navbar.Collapse>    
-        <LoginModal {...props} show={this.state.showLoginModal} onHide={this.toggleLogin} loginUser={this.props.loginUser}/>    
+        <LoginModal {...props} show={this.state.showLoginModal} onHide={this.toggleLogin} loginUser={this.props.loginUser}/> 
+        <SignupModal {...props} show={this.state.showSignupModal} onHide={this.toggleSignup} />  
       </Navbar>
     );
   }

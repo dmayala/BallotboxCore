@@ -13,6 +13,7 @@
     "react-router/history": "registry:dt/react-router/history#2.0.0+20160316155526",
     "redux": "registry:dt/redux#3.3.1+20160326112656",
     "redux-form": "registry:dt/redux-form#4.0.3+20160201090541",
-    "redux-promise": "registry:dt/redux-promise#0.5.3+20160322194740"
+    "redux-promise": "registry:dt/redux-promise#0.5.3+20160322194740",
+    "validator": "registry:dt/validator#4.5.1+20160316155526"
   }
 }

@@ -4,6 +4,7 @@ export const FETCH_POLLS = 'FETCH_POLLS';
 export const ADD_POLL = 'ADD_POLL';
 export const REMOVE_POLL = 'REMOVE_POLL';
 
+export const SIGNUP = 'SIGNUP';
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
 
@@ -35,6 +36,11 @@ export function removePoll(id: number) {
   };
 }
 
+export function signup(details) {
+  // todo - add signup method to controller
+  console.log(details);
+}
+
 export function loginUser(details) {
   const request = axios.post('/auth/login', details); 
 
@@ -52,3 +58,5 @@ export function logoutUser() {
     payload: request
   };
 }
+
+
