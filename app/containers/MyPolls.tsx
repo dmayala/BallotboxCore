@@ -87,7 +87,7 @@ class MyPolls extends React.Component<P, S> {
       let title: JSX.Element = (
         <div className="clearfix">
           {poll.name} 
-          <Button onClick={(e) => { e.stopPropagation(); this._openModal(poll.id) }} className="pull-right" bsStyle="danger" bsSize="xsmall">
+          <Button onClick={(e) => { e.stopPropagation(); e.preventDefault(); this._openModal(poll.id) }} className="pull-right" bsStyle="danger" bsSize="xsmall">
             <Glyphicon glyph="trash" />
           </Button>
         </div>

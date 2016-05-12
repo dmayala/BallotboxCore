@@ -1,7 +1,9 @@
 import * as axios from 'axios';
 
-export const ADD_POLL = 'ADD_POLL';
 export const FETCH_POLLS = 'FETCH_POLLS';
+export const ADD_POLL = 'ADD_POLL';
+export const REMOVE_POLL = 'REMOVE_POLL';
+
 
 export const LOGIN_USER = 'LOGIN_USER';
 
@@ -24,6 +26,12 @@ export function addPoll(details) {
 };
 
 export function removePoll(id: number) {
+  const request = axios.delete(`/api/polls/${id}`); 
+  
+  return {
+    type: REMOVE_POLL,
+    payload: request
+  }
   
 }
 

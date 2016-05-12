@@ -1,14 +1,36 @@
-import { FETCH_POLLS } from '../actions/index';
+import { FETCH_POLLS, REMOVE_POLL } from '../actions/index';
+import * as _ from 'lodash';
 
-const INITIAL_STATE = {
+interface Poll {
+  id: number;
+}
+
+interface S {
+  all: Poll[];
+}
+
+interface IAction {
+  payload: { data: any };
+  type: any;
+}
+
+const INITIAL_STATE: S = {
   all: []
 };
 
-export default function(state = INITIAL_STATE, action) {
+function removePoll(state: S, action: IAction) {
+  let id: number = action.payload.data.id;
+  let copy: Poll[] = state.all.slice();
+  copy.splice(_.findIndex(copy, (c) => c.id === id), 1);
+  return Object.assign({}, state, { all: copy });
+}
+
+export default function(state = INITIAL_STATE, action: IAction) {
   switch(action.type) {
     case FETCH_POLLS:
-      console.log(action.payload);
-      return { all: action.payload.data || [] };
+      return Object.assign({}, state, { all: action.payload.data });
+    case REMOVE_POLL:
+      return removePoll(state, action);
     default:
       return state;
   }
