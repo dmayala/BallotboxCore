@@ -29,7 +29,32 @@ namespace Ballotbox.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Login([FromBody] LoginViewModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await _userManager.FindByEmailAsync(model.Email) != null)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new { Message = "This email is already registered." });
+                }
+
+                var user = new BallotboxUser() { UserName = model.Username, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return Json(new { Message = "Success" });
+                }
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed", ModelState = ModelState.Values.SelectMany(v => v.Errors) });
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
              if (ModelState.IsValid)
              {
@@ -50,7 +75,7 @@ namespace Ballotbox.Controllers
         }
         
         [HttpPost]
-        public async Task<ActionResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             if (User.Identity.IsAuthenticated)
             {

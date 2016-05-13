@@ -8,7 +8,6 @@ export const SIGNUP = 'SIGNUP';
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
 
-
 export function fetchPolls(username: string) {
   const request = axios.get(`/api/polls/${username}`); 
 
@@ -37,8 +36,12 @@ export function removePoll(id: number) {
 }
 
 export function signup(details) {
-  // todo - add signup method to controller
-  console.log(details);
+  const request = axios.post('/auth/register', details);
+
+  return {
+    type: SIGNUP,
+    payload: request
+  };
 }
 
 export function loginUser(details) {

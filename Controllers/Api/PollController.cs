@@ -56,7 +56,6 @@ namespace Ballotbox.Controllers.Api
             return Json(new { Message = "Failed" });
         }
 
-
         [HttpPost]
         public async Task<JsonResult> Post([FromBody]AddPollViewModel vm)
         {

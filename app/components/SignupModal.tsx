@@ -22,9 +22,11 @@ class SignupModal extends React.Component<P, {}> {
   };
 
   _onSubmit = (props) => {
-    this.props.signup(props).then(() => {
+    this.props.signup(props).then((result) => {
       this.props.onHide();
-      this.context.router.push('/dashboard'); 
+      if (result.payload.status === 200) {
+        this.context.router.push('/dashboard'); 
+      };
     });
   };
   
@@ -34,7 +36,7 @@ class SignupModal extends React.Component<P, {}> {
   };
 
   render() {
-    let { fields: { email, username, password }, handleSubmit } = this.props;
+    let { fields: { email, username, password, confirmPassword }, handleSubmit } = this.props;
 
     return (
       <Modal show={this.props.show} onHide={this._onClose}>
@@ -65,6 +67,13 @@ class SignupModal extends React.Component<P, {}> {
                 {password.touched? password.error : ''}
               </div>
             </div>
+            <div className={ `form-group ${confirmPassword.touched && confirmPassword.invalid ? 'has-error' : ''}`} >
+              <label className="control-label">Confirm Password</label>
+              <input type="password" className="form-control" {...confirmPassword} />
+              <div className="help-block">
+                {confirmPassword.touched ? confirmPassword.error : ''}
+              </div>
+            </div>
           </form>
         </Modal.Body>
 
@@ -77,7 +86,7 @@ class SignupModal extends React.Component<P, {}> {
   }
 }
 
-function validate({ email= '', username = '', password = '' }) {
+function validate({ email = '', username = '', password = '', confirmPassword = '' }) {
   const errors: any = {};
   const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 
@@ -90,7 +99,11 @@ function validate({ email= '', username = '', password = '' }) {
   }
 
   if(!passRegex.test(password.trim())) {
-    errors.password = "A password must be a minimum 8 characters with at least 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character.";
+    errors.password = 'A password must be a minimum 8 characters with at least 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character.';
+  }
+
+  if (confirmPassword !== password) {
+      errors.confirmPassword = 'Passwords are not matching.';
   }
     
   return errors;
@@ -98,6 +111,6 @@ function validate({ email= '', username = '', password = '' }) {
 
 export default reduxForm({
   form: 'SignupModalForm',
-  fields: [ 'email', 'username', 'password' ],
+  fields: [ 'email', 'username', 'password', 'confirmPassword' ],
   validate
 }, null, { signup })(SignupModal);
