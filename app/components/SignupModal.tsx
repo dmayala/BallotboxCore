@@ -1,21 +1,26 @@
 import * as React from 'react';
 import { reduxForm, ReduxFormProps } from 'redux-form';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Alert, Button } from 'react-bootstrap';
 import { isEmail } from 'validator';
 
-import { signup } from '../actions';
+import { signup, loadUser } from '../actions';
 
 interface P extends ReduxFormProps {
   onHide(e?: React.SyntheticEvent): void;
   show: boolean;
   signup(props: any): Promise<any>;
+  loadUser(username: string): void;
 }
 
-class SignupModal extends React.Component<P, {}> {
+class SignupModal extends React.Component<P, any> {
     
   static contextTypes: React.ValidationMap<any> = {
     router: React.PropTypes.object
   };
+  
+  state = {
+    submitFailure: ''
+  }
     
   context: {
     router: ReactRouter.RouterOnContext;
@@ -23,14 +28,18 @@ class SignupModal extends React.Component<P, {}> {
 
   _onSubmit = (props) => {
     this.props.signup(props).then((result) => {
-      this.props.onHide();
       if (result.payload.status === 200) {
+        this.props.onHide();
+        this.props.loadUser(props.username);
         this.context.router.push('/dashboard'); 
-      };
+      } else {
+        this.setState({ submitFailure: result.payload.data.message });
+      }
     });
   };
   
   _onClose = () => {
+    this.setState({ submitFailure: '' });
     this.props.resetForm();
     this.props.onHide();
   };
@@ -46,6 +55,9 @@ class SignupModal extends React.Component<P, {}> {
 
         <Modal.Body>
           <form>
+            {this.state.submitFailure ? (<Alert bsStyle="danger">
+              { this.state.submitFailure }
+            </Alert>) : null}
             <div className={ `form-group ${email.touched && email.invalid ? 'has-error' : ''}`} >
               <label className="control-label">Email</label>
               <input type="email" className="form-control" {...email} />
@@ -79,7 +91,7 @@ class SignupModal extends React.Component<P, {}> {
 
         <Modal.Footer>
           <Button onClick={this._onClose}>Close</Button>
-          <Button onClick={handleSubmit(this._onSubmit.bind(this))} bsStyle="primary">Login</Button>
+          <Button onClick={handleSubmit(this._onSubmit.bind(this))} bsStyle="primary">Submit</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -113,4 +125,4 @@ export default reduxForm({
   form: 'SignupModalForm',
   fields: [ 'email', 'username', 'password', 'confirmPassword' ],
   validate
-}, null, { signup })(SignupModal);
+}, null, { signup, loadUser })(SignupModal);

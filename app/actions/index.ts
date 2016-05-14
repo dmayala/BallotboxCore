@@ -7,6 +7,7 @@ export const REMOVE_POLL = 'REMOVE_POLL';
 export const SIGNUP = 'SIGNUP';
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGOUT_USER = 'LOGOUT_USER';
+export const LOAD_USER = 'LOAD_USER';
 
 export function fetchPolls(username: string) {
   const request = axios.get(`/api/polls/${username}`); 
@@ -62,4 +63,9 @@ export function logoutUser() {
   };
 }
 
-
+export function loadUser(username) {
+  return {
+    type: LOAD_USER,
+    payload: { username }
+  };
+};

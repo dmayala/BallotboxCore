@@ -36,7 +36,7 @@ namespace Ballotbox.Controllers
                 if (await _userManager.FindByEmailAsync(model.Email) != null)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { Message = "This email is already registered." });
+                    return Json(new { Message = "This email is associated with another account." });
                 }
 
                 var user = new BallotboxUser() { UserName = model.Username, Email = model.Email };
@@ -49,7 +49,7 @@ namespace Ballotbox.Controllers
                 }
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { Message = "Failed", ModelState = ModelState.Values.SelectMany(v => v.Errors) });
+            return Json(new { Message = "This username is already taken." });
 
         }
 

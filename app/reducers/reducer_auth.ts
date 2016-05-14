@@ -1,4 +1,4 @@
-import { LOGIN_USER, LOGOUT_USER } from '../actions/index';
+import { LOGIN_USER, LOGOUT_USER, LOAD_USER } from '../actions/index';
 
 const INITIAL_STATE = {
   username: ''
@@ -12,6 +12,8 @@ export default function(state = INITIAL_STATE, action) {
       }
     case LOGOUT_USER:
       return INITIAL_STATE;
+    case LOAD_USER: 
+      return { username: action.payload.username };
     default:
       return state;
   }
