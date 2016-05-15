@@ -10,6 +10,7 @@ namespace Ballotbox.Database
     {
         IEnumerable<Poll> GetAllPolls();
         IEnumerable<Poll> GetAllPollsByUserId(string userId);
+        Poll GetPollById(int pollId);
         void AddPoll(Poll newPoll);
         void RemovePollById(int pollId);
         bool SaveAll();

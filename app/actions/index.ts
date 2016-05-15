@@ -1,6 +1,7 @@
 import * as axios from 'axios';
 
 export const FETCH_POLLS = 'FETCH_POLLS';
+export const FETCH_POLL = 'FETCH_POLL';
 export const ADD_POLL = 'ADD_POLL';
 export const REMOVE_POLL = 'REMOVE_POLL';
 
@@ -10,13 +11,22 @@ export const LOGOUT_USER = 'LOGOUT_USER';
 export const LOAD_USER = 'LOAD_USER';
 
 export function fetchPolls(username: string) {
-  const request = axios.get(`/api/polls/${username}`); 
+  const request = axios.get(`/api/polls/user/${username}`); 
 
   return {
     type: FETCH_POLLS,
     payload: request
   };
-}
+};
+
+export function fetchPoll(pollId: number) {
+  const request = axios.get(`/api/polls/${pollId}`); 
+
+  return {
+    type: FETCH_POLLS,
+    payload: request
+  };
+};
 
 export function addPoll(details) {
   const request = axios.post('/api/polls', details); 
@@ -34,7 +44,7 @@ export function removePoll(id: number) {
     type: REMOVE_POLL,
     payload: request
   };
-}
+};
 
 export function signup(details) {
   const request = axios.post('/auth/register', details);
@@ -43,7 +53,7 @@ export function signup(details) {
     type: SIGNUP,
     payload: request
   };
-}
+};
 
 export function loginUser(details) {
   const request = axios.post('/auth/login', details); 
@@ -61,7 +71,7 @@ export function logoutUser() {
     type: LOGOUT_USER,
     payload: request
   };
-}
+};
 
 export function loadUser(username) {
   return {

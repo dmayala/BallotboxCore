@@ -60,6 +60,17 @@ namespace Ballotbox.Database
                 return null;
             }
         }
+        
+        public Poll GetPollById(int pollId) {
+            try {
+                return _context.Polls.Include(p => p.Choices)
+                                     .First(p => p.Id == pollId);
+                
+            } catch (Exception ex) {
+                _logger.LogError("Could not get poll from database", ex);
+                return null;
+            }
+        }
 
         public bool SaveAll()
         {
