@@ -12,13 +12,24 @@ interface P extends ReduxFormProps {
   loadUser(username: string): void;
 }
 
-class SignupModal extends React.Component<P, any> {
+interface S {
+  submitFailure: string;
+}
+
+interface IFieldNames { 
+  email: string;
+  username: string;
+  password: string; 
+  confirmPassword: string;
+} 
+
+class SignupModal extends React.Component<P, S> {
     
   static contextTypes: React.ValidationMap<any> = {
     router: React.PropTypes.object
   };
   
-  state = {
+  state: S = {
     submitFailure: ''
   }
     
@@ -26,7 +37,7 @@ class SignupModal extends React.Component<P, any> {
     router: ReactRouter.RouterOnContext;
   };
 
-  _onSubmit = (props) => {
+  private _onSubmit = (props: IFieldNames): void => {
     this.props.signup(props).then((result) => {
       if (result.payload.status === 200) {
         this.props.onHide();
@@ -38,7 +49,7 @@ class SignupModal extends React.Component<P, any> {
     });
   };
   
-  _onClose = () => {
+  private _onClose = (): void => {
     this.setState({ submitFailure: '' });
     this.props.resetForm();
     this.props.onHide();
@@ -99,8 +110,8 @@ class SignupModal extends React.Component<P, any> {
 }
 
 function validate({ email = '', username = '', password = '', confirmPassword = '' }) {
-  const errors: any = {};
-  const passRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+  const errors:any = {};
+  const passRegex: RegExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
 
   if(!isEmail(email)) {
     errors.email = 'Please enter a valid email.';
