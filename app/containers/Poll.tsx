@@ -1,35 +1,61 @@
 import * as React from 'react';
 import {Button} from 'react-bootstrap';
+import { connect } from 'react-redux';
 import {sortBy} from 'lodash';
 
-class Poll extends React.Component<any, any> {
+import { fetchPoll, vote } from '../actions';
 
-  state = this.getState();
+interface Poll {
+  id: number;
+  name: string;
+  choices: Choice[]
+}
 
-  private _onChange = () => {
-    this.setState(this.getState());
+interface Choice {
+  id: number;
+  name: string;
+}
+
+interface P extends ReactRouter.RouteComponentProps<{ id: number }, {}> {
+  vote(pollId: number, choiceId: number): void;
+  fetchPoll(pollId: number): void;
+  poll: Poll
+}
+
+class Poll extends React.Component<P, {}> {
+  
+  static contextTypes: React.ValidationMap<any> = {
+		router: React.PropTypes.object
+	};
+  
+  context: {
+    router: ReactRouter.RouterOnContext;
+  };
+  
+  private componentWillMount() {
+    this.props.fetchPoll(this.props.params.id); 
   }
 
   private _onVote = (choiceId) => {
-    this.props.vote(this.state.id, choiceId);
+    this.props.vote(this.props.poll.id, choiceId);
   }
   
   private _renderPoll = () => {
-    let { id, question, choices } = this.state;
+    let { id, name, choices } = this.props.poll;
     
-    choices = sortBy(choices, 'id').map((choice) => {
+    let choicesEl: JSX.Element[] = sortBy(choices, 'id').map((choice) => {
       return (
-        <Button key={choice.id} onClick={ this._onVote.bind(this, choice.id) } bsStyle="primary" bsSize="large" block>{ choice.text }</Button>
+        <Button key={choice.id} onClick={ this._onVote.bind(this, choice.id) } bsStyle="primary" bsSize="large" block>{ choice.name }</Button>
       );
     });
 
     return (
       <div>
         <h2 className="text-center">
-          { question }
+          { name }
         </h2>
         <div className="well">
-          { choices }
+          { choicesEl }
         </div>
       </div>
     );
@@ -47,12 +73,19 @@ class Poll extends React.Component<any, any> {
   }
 
   render() {
+    console.log(this.props.poll);
     return (
       <div className="container survey-component">
-        { this.state.question ? this._renderPoll() : this._renderEmpty() }
+        { this.props.poll ? this._renderPoll() : this._renderEmpty() }
       </div>
     );
   }
 }
 
-export default Poll;
+function mapStateToProps(state) {
+  return {
+    poll: state.polls.poll,
+  };
+}
+
+export default connect(mapStateToProps, { fetchPoll, vote })(Poll);

@@ -1,4 +1,4 @@
-import { FETCH_POLLS, REMOVE_POLL } from '../actions/index';
+import { FETCH_POLL, FETCH_POLLS, REMOVE_POLL } from '../actions/index';
 import * as _ from 'lodash';
 
 interface Poll {
@@ -7,6 +7,7 @@ interface Poll {
 
 interface S {
   all: Poll[];
+  poll: Poll
 }
 
 interface IAction {
@@ -15,7 +16,8 @@ interface IAction {
 }
 
 const INITIAL_STATE: S = {
-  all: []
+  all: [],
+  poll: null
 };
 
 function removePoll(state: S, action: IAction) {
@@ -27,6 +29,8 @@ function removePoll(state: S, action: IAction) {
 
 export default function(state = INITIAL_STATE, action: IAction) {
   switch(action.type) {
+    case FETCH_POLL:
+      return Object.assign({}, state, { poll: action.payload.data });
     case FETCH_POLLS:
       return Object.assign({}, state, { all: action.payload.data });
     case REMOVE_POLL:
