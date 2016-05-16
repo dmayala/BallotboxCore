@@ -106,7 +106,7 @@ class MyPolls extends React.Component<P, S> {
 
     return (
       <div id="myPolls">
-        <h2>My Polls</h2>       
+            <h2>My Polls - { this.props.user }</h2>       
           <Input ref="resultSearch" onChange={this._handleSearch}name="search" type="text" placeholder="Search for polls" /> 
           <Accordion>
             { polls }

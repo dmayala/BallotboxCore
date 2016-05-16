@@ -12,15 +12,37 @@ import { persistStore, autoRehydrate } from 'redux-persist';
 import reducers from './reducers';
 import routes from './routes';
 
+interface S {
+    rehydrated: boolean;
+}
+
 const middleware = applyMiddleware(promise as any);
 const store = compose(
     middleware
 )(createStore)(reducers, {}, autoRehydrate());
 
-persistStore(store, { storage: localForage, whitelist: [ 'auth' ] });
+class AppProvider extends React.Component<any, S> {
+
+    state: S = { rehydrated: false };
+
+    private componentWillMount(): void {
+      persistStore(store, { storage: localForage, whitelist: ['auth'] }, () => {
+        this.setState({ rehydrated: true })
+      });
+    }
+
+    render() {
+      if (!this.state.rehydrated) {
+        return <div>Loading...</div>
+      }
+      return (
+        <Provider store={store}>
+          <Router history={hashHistory} routes={routes} />
+        </Provider>
+      );
+    }
+}
 
 ReactDOM.render(
-    <Provider store={store}>
-        <Router history={hashHistory} routes={routes} />
-    </Provider>
-    , document.getElementById('ballotbox'));
+  <AppProvider />,
+  document.getElementById('ballotbox'));

@@ -12,7 +12,8 @@ export default function(state = INITIAL_STATE, action) {
       }
     case LOGOUT_USER:
       return INITIAL_STATE;
-    case LOAD_USER: 
+    case LOAD_USER:
+          console.log('hi');
       return { username: action.payload.username };
     default:
       return state;
