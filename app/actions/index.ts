@@ -5,7 +5,7 @@ export const FETCH_POLL = 'FETCH_POLL';
 export const ADD_POLL = 'ADD_POLL';
 export const REMOVE_POLL = 'REMOVE_POLL';
 
-export const VOTE = 'VOTE';
+export const ADD_VOTE = 'ADD_VOTE';
 
 export const SIGNUP = 'SIGNUP';
 export const LOGIN_USER = 'LOGIN_USER';
@@ -13,8 +13,12 @@ export const LOGOUT_USER = 'LOGOUT_USER';
 export const LOAD_USER = 'LOAD_USER';
 
 export function vote(pollId: number, choiceId: number) {
-  // todo
-  console.log(`pollId: ${pollId} and choiceId: ${choiceId}`);
+  const request = axios.post(`/api/polls/${pollId}/choices/${choiceId}`); 
+
+  return {
+    type: ADD_VOTE,
+    payload: request
+  };
 }
 
 export function fetchPolls(username: string) {

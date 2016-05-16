@@ -73,7 +73,6 @@ class Poll extends React.Component<P, {}> {
   }
 
   render() {
-    console.log(this.props.poll);
     return (
       <div className="container survey-component">
         { this.props.poll ? this._renderPoll() : this._renderEmpty() }

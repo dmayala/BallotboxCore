@@ -110,11 +110,26 @@ namespace Ballotbox.Controllers.Api
             _repository.RemovePollById(pollId);
             if (_repository.SaveAll())
             {
-                Response.StatusCode = (int)HttpStatusCode.Created;
                 return Json(new { Id = pollId });
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed", ModelState = ModelState });
         }
-    }
+        
+        [HttpPost]
+        [Route("{pollId}/choices/{choiceId}")]
+        public async Task<JsonResult> Vote(int choiceId) {
+            var newVote = new Vote();
+            
+            var user = await _userManager.FindByIdAsync(User.GetUserId());
+            newVote.User = user;
+            
+            _repository.AddVote(choiceId, newVote);
+            if (_repository.SaveAll()){
+                return Json(new { ChoiceId = choiceId });
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed", ModelState });     
+        }
+    } 
 }

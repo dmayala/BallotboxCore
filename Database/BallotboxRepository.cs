@@ -71,6 +71,18 @@ namespace Ballotbox.Database
                 return null;
             }
         }
+        
+        
+        public void AddVote(int choiceId, Vote newVote) {
+            try {
+                var choice = _context.Choices.Include(c => c.Votes)
+                                             .Where(c => c.Id == choiceId)
+                                             .FirstOrDefault();
+                choice.Votes.Add(newVote);
+            } catch (Exception ex) {
+                _logger.LogError("Could not add vote to database", ex);
+            }        
+        }
 
         public bool SaveAll()
         {
