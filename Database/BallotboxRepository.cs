@@ -52,7 +52,8 @@ namespace Ballotbox.Database
             {
                 return _context.Polls.Where(p => p.User.Id == userId)
                                      .Include(p => p.User)
-                                     .Include(p => p.Choices).ToList();
+                                     .Include(p => p.Choices).ThenInclude(c => c.Votes)
+                                     .ToList();
 
             } catch (Exception ex)
             {

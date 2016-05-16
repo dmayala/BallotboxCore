@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace Ballotbox.ViewModels
 {
-    public class ChoiceViewModel
+    public class VoteViewModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<VoteViewModel> Votes { get; set; } = new List<VoteViewModel>();
+        public BallotboxUserViewModel User { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace Ballotbox.ViewModels
         [Required]
         public string Name { get; set; }
         public BallotboxUserViewModel User { get; set; } 
-        public IEnumerable<Choice> Choices { get; set; }
+        public IEnumerable<ChoiceViewModel> Choices { get; set; }
     }
 }
