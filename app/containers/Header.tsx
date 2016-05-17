@@ -9,6 +9,8 @@ import { loginUser, logoutUser } from '../actions';
 import LoginModal from '../components/LoginModal';
 import SignupModal from '../components/SignupModal';
 
+declare var app: any;
+
 interface S {
     showLoginModal: boolean;
     showSignupModal: boolean;
@@ -80,7 +82,7 @@ class Header extends React.Component<P, S> {
           <Nav navbar>
           </Nav>
           <Nav navbar pullRight>
-           { !this.props.user ? 
+           { !app.isLoggedIn ? 
               [(<NavItem key={1} eventKey={1} href="#" onSelect={this.toggleSignup}>Sign up</NavItem>),
               (<NavItem key={2} eventKey={2} href="#" onSelect={this.toggleLogin}>Login</NavItem>)] :
               this._loggedInNav()

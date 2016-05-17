@@ -10,6 +10,7 @@ namespace Ballotbox.Controllers.Web
     {
         public IActionResult Index()
         {
+            ViewData["IsLoggedIn"] = !String.IsNullOrEmpty(User.Identity.Name);
             return View();
         }
 
