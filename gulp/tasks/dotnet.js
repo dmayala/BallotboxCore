@@ -22,7 +22,7 @@ gulp.task('dotnet', [ 'build' ], function () {
   nodemon({
     watch: 'Controllers',
     ext: 'cs',
-    exec: 'dnx web',
+    exec: 'dnx web --Hosting:Environment Development',
     ignore: [ 'node_modules/', 'wwwroot/', 'app/' ]
   })
   .on('start', initBrowserSync)
