@@ -21,6 +21,14 @@ interface S extends ILoginDetails {
 
 class LoginModal extends React.Component<P, S> {
   
+  static contextTypes: React.ValidationMap<any> = {
+    router: React.PropTypes.object
+  };
+  
+  context: {
+    router: ReactRouter.RouterOnContext;
+  };
+  
   refs: {
     [string: string]: any;
     loginForm: any;
@@ -41,7 +49,8 @@ class LoginModal extends React.Component<P, S> {
     let { username, password } = this.state
     this.props.loginUser({ username, password }).then((result) => {
       if (result.payload.status === 200) {
-        return this.props.onHide();
+        this.props.onHide();
+        return this.context.router.push('/dashboard'); 
       }
       this._onFailedLogin();
     });

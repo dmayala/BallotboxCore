@@ -9,8 +9,6 @@ import { loginUser, logoutUser } from '../actions';
 import LoginModal from '../components/LoginModal';
 import SignupModal from '../components/SignupModal';
 
-declare var app: any;
-
 interface S {
     showLoginModal: boolean;
     showSignupModal: boolean;
@@ -20,6 +18,7 @@ interface P {
   loginUser(details): Promise<any>;
   logoutUser(): Promise<any>;
   user: string;
+  isAuthenticated: boolean;
 }
 
 class Header extends React.Component<P, S> {
@@ -82,7 +81,7 @@ class Header extends React.Component<P, S> {
           <Nav navbar>
           </Nav>
           <Nav navbar pullRight>
-           { !app.isLoggedIn ? 
+           { !this.props.isAuthenticated ? 
               [(<NavItem key={1} eventKey={1} href="#" onSelect={this.toggleSignup}>Sign up</NavItem>),
               (<NavItem key={2} eventKey={2} href="#" onSelect={this.toggleLogin}>Login</NavItem>)] :
               this._loggedInNav()
@@ -100,7 +99,8 @@ class Header extends React.Component<P, S> {
 
 function mapStateToProps(state) {
   return {
-    user: state.auth.username
+    user: state.auth.username,
+    isAuthenticated: state.auth.isAuthenticated
   };
 }
 

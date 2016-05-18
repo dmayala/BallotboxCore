@@ -11,7 +11,7 @@ interface S {
 }
 
 interface IAction {
-  payload: { data: any };
+  payload: { data: any, status: number };
   type: any;
 }
 
@@ -30,9 +30,13 @@ function removePoll(state: S, action: IAction) {
 export default function(state = INITIAL_STATE, action: IAction) {
   switch(action.type) {
     case FETCH_POLL:
-      return Object.assign({}, state, { poll: action.payload.data });
+      if (action.payload.status === 200) {
+        return Object.assign({}, state, { poll: action.payload.data });
+      }
     case FETCH_POLLS:
-      return Object.assign({}, state, { all: action.payload.data });
+      if (action.payload.status === 200) {
+        return Object.assign({}, state, { all: action.payload.data });
+      }
     case REMOVE_POLL:
       return removePoll(state, action);
     default:
