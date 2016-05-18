@@ -44,7 +44,7 @@ class MyPolls extends React.Component<P, S> {
   }
   
   componentWillMount() {
-    this.props.fetchPolls(this.props.user);
+    if (this.props.user) this.props.fetchPolls(this.props.user);
   }
   
   private _getState(): S {
