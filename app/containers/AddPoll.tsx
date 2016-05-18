@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {Link} from 'react-router';
 import { connect } from 'react-redux';
 import {Input, Button, Glyphicon, Alert} from 'react-bootstrap';
 
@@ -12,6 +13,7 @@ interface S {
   name: string;
   choices: string[];
   success: boolean;
+  pollId: number;
 }
 
 class AddPoll extends React.Component<P, S> {
@@ -27,14 +29,16 @@ class AddPoll extends React.Component<P, S> {
     return {
       name: '',
       choices: [ null, null, null ],
-      success: null
+      success: null,
+      pollId: 0
     }
   }
 
-  private _onChange = (): void => {
+  private _onChange = (pollId: number): void => {
     this.refs.addPoll.reset();
     let state = this._getClearState();
     state.success = true;
+    state.pollId = pollId;
     this.setState(state);
   }
 
@@ -56,8 +60,8 @@ class AddPoll extends React.Component<P, S> {
     if (name && choices && choices.length > 1) {
       let filled = choices.filter((choice) => { return choice != null; }); 
       if (filled.length === choices.length) {
-        return this.props.addPoll(this.state).then(() => {
-          this._onChange();
+        return this.props.addPoll(this.state).then((result) => {    
+          this._onChange(result.payload.data.id);
         });
       }
     }
@@ -97,7 +101,7 @@ class AddPoll extends React.Component<P, S> {
 
         { this.state.success ? (
           <Alert bsStyle="success">
-            <strong>Success!</strong> A new poll has been added.
+            <strong>Success!</strong> A new poll has been added <Link to={`polls/${this.state.pollId}`}>here</Link>.
           </Alert>
           ) : null}
 

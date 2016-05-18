@@ -8,8 +8,8 @@ import { signup, loadUser } from '../actions';
 interface P extends ReduxFormProps {
   onHide(e?: React.SyntheticEvent): void;
   show: boolean;
-  signup(props: any): Promise<any>;
-  loadUser(username: string): void;
+  signup?(props: any): Promise<any>;
+  loadUser?(username: string): void;
 }
 
 interface S {
