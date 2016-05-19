@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import {Input, Button, Glyphicon, Accordion, Panel, Modal} from 'react-bootstrap';
+import { PieChart } from 'rd3';
 import {sortBy} from 'lodash';
 
 import { removePoll, fetchPolls } from '../actions';
@@ -79,11 +80,9 @@ class MyPolls extends React.Component<P, S> {
       return poll.name.toLowerCase().indexOf(this.state.searchTerm) !== -1;
     }).map(poll => {
       let choices = sortBy(poll.choices, 'id').map((choice, index) => {
-        return (
-          <li key={index}>{choice.name} - {choice.votes.length}</li>
-        ); 
+        return { label: choice.name, value: choice.votes.length };        
       });
-
+      
       let title: JSX.Element = (
         <div className="clearfix">
           {poll.name} 
@@ -92,12 +91,19 @@ class MyPolls extends React.Component<P, S> {
           </Button>
         </div>
       );
-
+            
       return (
         <Panel href="#" key={poll.id} eventKey={poll.id} header={title}>
-          <ul>
-            { choices }
-          </ul>
+          <PieChart
+                   data={choices} 
+                   width={700}
+                   height={500}
+                   radius={200}
+                   innerRadius={100}
+                   sectorBorderColor="white"
+                   valueTextFormatter={(v) => `${v} vote(s)`}  
+                   hoverAnimation={false}            
+                   />
         </Panel>
       ); 
     });

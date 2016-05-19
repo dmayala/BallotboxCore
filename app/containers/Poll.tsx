@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Button} from 'react-bootstrap';
 import { connect } from 'react-redux';
+import {Button} from 'react-bootstrap';
 import {sortBy} from 'lodash';
 
 import { fetchPoll, vote } from '../actions';
@@ -61,13 +61,12 @@ class Poll extends React.Component<P, {}> {
     );
   }
   
-  private _renderEmpty = () => {
+  private _renderComplete = () => {
     return (
       <div>
         <h2 className="text-center">
-          There are no more polls. :(
+          Your vote has been submitted. :)
         </h2>
-        <p className="text-center">Check again later!</p>
       </div>
     );
   }
@@ -75,7 +74,7 @@ class Poll extends React.Component<P, {}> {
   render() {
     return (
       <div className="container survey-component">
-        { this.props.poll ? this._renderPoll() : this._renderEmpty() }
+        { this.props.poll ? this._renderPoll() : this._renderComplete() }
       </div>
     );
   }

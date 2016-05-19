@@ -60,10 +60,7 @@ class Header extends React.Component<P, S> {
         (<LinkContainer key={1} to="dashboard">
           <NavItem eventKey={1}>Dashboard</NavItem>
         </LinkContainer>),
-        (<LinkContainer key={2} to="settings">
-          <NavItem eventKey={2}>Settings</NavItem>
-        </LinkContainer>),
-        (<NavItem href="/" key={3} eventKey={3} onClick={this._onLogout}>Log Out</NavItem>),
+        (<NavItem href="/" key={2} eventKey={2} onClick={this._onLogout}>Log Out</NavItem>),
       ];
   };
 
