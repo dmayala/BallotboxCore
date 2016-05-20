@@ -28,7 +28,7 @@ namespace Ballotbox
                 .SetBasePath(appEnv.ApplicationBasePath)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddJsonFile("config.json");
+                .AddJsonFile("config.json", optional : true);
 
             if (env.IsDevelopment())
             {
