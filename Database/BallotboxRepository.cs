@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ballotbox.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ballotbox.Database
 {

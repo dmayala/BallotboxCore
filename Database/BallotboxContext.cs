@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Ballotbox.Models;
 
 namespace Ballotbox.Database
@@ -14,7 +10,7 @@ namespace Ballotbox.Database
         public DbSet<Choice> Choices { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
-        public BallotboxContext()
+        public BallotboxContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
         }

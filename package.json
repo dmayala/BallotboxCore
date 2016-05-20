@@ -2,8 +2,8 @@
   "name": "ballotbox",
   "version": "0.0.0",
   "scripts": {
-    "start": "dnx Microsoft.AspNet.Server.Kestrel",
-    "build": "dnu restore && typings install && gulp build",
+    "start": "dotnet run",
+    "build": "dotnet restore && typings install && gulp build",
     "dev": "gulp watch",
     "postinstall": "npm run build"
   },

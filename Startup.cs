@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Data.Entity;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,18 +13,19 @@ using Ballotbox.Models;
 using Ballotbox.Database;
 using Ballotbox.Services;
 using Newtonsoft.Json.Serialization;
-using AutoMapper;
 using Ballotbox.ViewModels;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using AutoMapper;
 
 namespace Ballotbox
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
+        public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
-                .SetBasePath(appEnv.ApplicationBasePath)
+                .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddJsonFile("config.json", optional : true);
@@ -52,9 +52,8 @@ namespace Ballotbox
                     });
 
             // Add framework services.
-            services.AddEntityFramework()
-                .AddNpgsql()
-                .AddDbContext<BallotboxContext>(options =>
+            services.AddEntityFrameworkNpgsql()
+                .AddDbContext<BallotboxContext>(options => 
                     options.UseNpgsql(Configuration["Data:BallotboxContextConnection"]));
 
             services.AddIdentity<BallotboxUser, IdentityRole>()
@@ -97,8 +96,6 @@ namespace Ballotbox
                 catch { }
             }
 
-            app.UseIISPlatformHandler(options => options.AuthenticationDescriptions.Clear());
-
             app.UseStaticFiles();
 
             app.UseIdentity();
@@ -125,8 +122,5 @@ namespace Ballotbox
             var seeder = serviceProvider.GetService<BallotboxContextSeedData>();
             await seeder.EnsureSeedDataAsync();
         }
-
-        // Entry point for the application.
-        public static void Main(string[] args) => Microsoft.AspNet.Hosting.WebApplication.Run<Startup>(args);
     }
 }

@@ -2,15 +2,13 @@
 using Ballotbox.Database;
 using Ballotbox.Models;
 using Ballotbox.ViewModels;
-using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Ballotbox.Controllers.Api
@@ -79,7 +77,7 @@ namespace Ballotbox.Controllers.Api
                 try
                 {
                     var newPoll = Mapper.Map<Poll>(Mapper.Map<PollViewModel>(vm));
-                    var user = await _userManager.FindByIdAsync(User.GetUserId());
+                    var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
 
                     newPoll.User = user;
 
@@ -123,7 +121,7 @@ namespace Ballotbox.Controllers.Api
         public async Task<JsonResult> Vote(int choiceId) {
             var newVote = new Vote();
             
-            var user = await _userManager.FindByIdAsync(User.GetUserId());
+            var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             newVote.User = user;
             
             _repository.AddVote(choiceId, newVote);
