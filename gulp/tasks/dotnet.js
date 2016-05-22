@@ -6,14 +6,7 @@ var _ = require('lodash');
 
 var initBrowserSync = _.once(function () {
   browserSync({
-    proxy: {
-      target: 'localhost:5000',
-      proxyReq: [
-        function (proxyReq) {
-          proxyReq.setHeader('Connection', 'keep-alive');
-        }
-      ]
-    },
+    proxy: { target: 'localhost:5000' },
     port: 5001
   });  
 });
@@ -22,7 +15,7 @@ gulp.task('dotnet', [ 'build' ], function () {
   nodemon({
     watch: 'Controllers',
     ext: 'cs',
-    exec: 'dnx web --Hosting:Environment Development',
+    exec: 'dotnet run',
     ignore: [ 'node_modules/', 'wwwroot/', 'app/' ]
   })
   .on('start', initBrowserSync)
