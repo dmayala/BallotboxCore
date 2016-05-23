@@ -13,7 +13,9 @@ export interface PollsState {
 }
 
 export interface Poll {
-  id: number;
+  id?: number;
+  name: string;
+  choices: string[];
 }
 
 // -----------------
@@ -48,6 +50,20 @@ class ReceivePoll extends Action {
     }
 }
 
+@typeName("ADD_POLL")
+class AddPoll extends Action {
+    constructor(public details: Poll) {
+        super();
+    }
+}
+
+@typeName("ADD_POLL_COMPLETE")
+class AddPollComplete extends Action {
+    constructor(public data: Poll) {
+        super();
+    }
+}
+
 @typeName("REMOVE_POLL")
 class RemovePoll extends Action {
     constructor(public pollId: number) {
@@ -61,6 +77,7 @@ class RemovePollComplete extends Action {
         super();
     }
 }
+
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -85,8 +102,17 @@ export const actionCreators = {
       });
   },
   
+  addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
+    fetch(`/api/polls`, {
+      method: 'post'
+    }).then(response => response.json())
+      .then((data: Poll) => {
+          dispatch(new AddPollComplete(data));
+      });
+  },
+  
   removePoll: (pollId: number): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls//${pollId}`, {
+    fetch(`/api/polls/${pollId}`, {
       method: 'delete'
     }).then(response => response.json())
       .then((pollId: number) => {

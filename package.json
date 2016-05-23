@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "dotnet run",
-    "build": "dotnet restore && typings install && gulp build",
+    "build": "dotnet restore && typings install && webpack",
     "dev": "gulp watch",
     "postinstall": "npm run build"
   },
@@ -17,7 +17,6 @@
     "extendify": "^1.0.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
-    "jquery": "^2.2.1",
     "sass-loader": "^3.2.0",
     "style-loader": "^0.13.0",
     "ts-loader": "^0.8.1",
@@ -30,7 +29,6 @@
   "dependencies": {
     "aspnet-prerendering": "^1.0.0",
     "aspnet-webpack": "^1.0.2",
-    "axios": "^0.11.0",
     "babel-core": "^6.5.2",
     "d3": "^3.5.17",
     "domain-task": "^1.0.1",
@@ -49,7 +47,6 @@
     "redux": "^3.5.2",
     "redux-form": "^5.2.3",
     "redux-persist": "^3.1.1",
-    "redux-promise": "^0.5.3",
     "redux-thunk": "^2.1.0",
     "redux-typed": "^1.0.0",
     "setimmediate": "^1.0.4",
