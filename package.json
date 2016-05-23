@@ -33,6 +33,7 @@
     "axios": "^0.11.0",
     "bootstrap-sass": "^3.3.6",
     "d3": "^3.5.17",
+    "font-awesome": "^4.6.1",
     "localforage": "^1.4.1",
     "lodash": "^4.11.1",
     "rd3": "^0.6.3",

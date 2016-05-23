@@ -8,7 +8,8 @@ gulp.task('sass', function () {
     gulp.src('./app/stylesheets/**/*.scss')
       .pipe(sass({
           includePaths: [
-            './node_modules/bootstrap-sass/assets/stylesheets'
+            './node_modules/bootstrap-sass/assets/stylesheets',
+            './node_modules/font-awesome/scss'
           ],
           outputStyle: 'compressed'
       }))
