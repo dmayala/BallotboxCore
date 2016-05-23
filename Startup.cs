@@ -16,6 +16,7 @@ using Newtonsoft.Json.Serialization;
 using Ballotbox.ViewModels;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using AutoMapper;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace Ballotbox
 {
@@ -71,34 +72,16 @@ namespace Ballotbox
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure(IApplicationBuilder app, IServiceProvider serviceProvider, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            app.UseDeveloperExceptionPage();
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-
-                // For more details on creating database during deployment see http://go.microsoft.com/fwlink/?LinkID=615859
-                try
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
-                    using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                        .CreateScope())
-                    {
-                        serviceScope.ServiceProvider.GetService<BallotboxContext>()
-                             .Database.Migrate();
-                    }
-                }
-                catch { }
+                    HotModuleReplacement = true,
+                    ReactHotModuleReplacement = true
+                });
             }
-
-            app.UseStaticFiles();
-
-            app.UseIdentity();
 
             Mapper.Initialize(config =>
             {
@@ -110,15 +93,20 @@ namespace Ballotbox
                         .ForMember(dest => dest.Choices, opt => opt.MapFrom(src => src.Choices.Select(n => new Choice() { Name = n })));
             });
 
-            // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
-
+            app.UseStaticFiles();     
+            app.UseIdentity();
+            loggerFactory.AddConsole();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
             });
-            
+
             var seeder = serviceProvider.GetService<BallotboxContextSeedData>();
             await seeder.EnsureSeedDataAsync();
         }

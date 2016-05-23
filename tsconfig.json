@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "inlineSourceMap": false,
-    "inlineSources": false,
+    "moduleResolution": "node",
+    "target": "es6",
+    "jsx": "preserve",
     "experimentalDecorators": true,
-    "jsx": "react"
+    "sourceMap": true,
+    "skipDefaultLibCheck": true
   },
   "exclude": [
     "node_modules",
