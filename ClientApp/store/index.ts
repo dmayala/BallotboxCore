@@ -5,7 +5,9 @@ import * as Auth from './Auth';
 
 // The top-level state object
 export interface ApplicationState {
-  polls: Polls.PollsState
+  polls: Polls.PollsState;
+  auth: Auth.AuthState;
+  form: any;
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using

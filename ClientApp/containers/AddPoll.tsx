@@ -1,13 +1,9 @@
 import * as React from 'react';
 import {Link} from 'react-router';
-import { connect } from 'react-redux';
+import { provide } from 'redux-typed';
+import { ApplicationState }  from '../store';
+import { actionCreators } from '../store/Polls';
 import {Input, Button, Glyphicon, Alert} from 'react-bootstrap';
-
-import { addPoll } from '../actions';
-
-interface P extends ReactRouter.RouteComponentProps<{}, {}> {
-  addPoll(state: S): Promise<any>
-}
 
 interface S {
   name: string;
@@ -134,4 +130,10 @@ class AddPoll extends React.Component<P, S> {
   }
 }
 
-export default connect(null, { addPoll })(AddPoll);
+// Selects which part of global state maps to this component, and defines a type for the resulting props
+const provider = provide(
+    null,
+    actionCreators
+);
+type P = typeof provider.allProps;
+export default provider.connect(AddPoll);
