@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "dotnet run",
-    "build": "dotnet restore && typings install && webpack",
+    "build": "dotnet restore && typings install && webpack --config webpack.config.vendor.js && webpack",
     "dev": "gulp watch",
     "postinstall": "npm run build"
   },
@@ -24,6 +24,7 @@
     "typings": "^1.0.4",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
+    "webpack-externals-plugin": "^1.0.0",
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
@@ -50,7 +51,6 @@
     "redux-thunk": "^2.1.0",
     "redux-typed": "^1.0.0",
     "setimmediate": "^1.0.4",
-    "validator": "^5.2.0",
-    "webpack-externals-plugin": "^1.0.0"
+    "validator": "^5.2.0"
   }
 }

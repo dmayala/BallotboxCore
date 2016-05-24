@@ -3,7 +3,7 @@ import { reduxForm, ReduxFormProps } from 'redux-form';
 import { Modal, Alert, Button } from 'react-bootstrap';
 import { isEmail } from 'validator';
 
-import { signup, loadUser } from '../actions';
+import { actionCreators } from '../store/Auth';
 
 interface P extends ReduxFormProps {
   onHide(e?: React.SyntheticEvent): void;
@@ -136,4 +136,4 @@ export default reduxForm({
   form: 'SignupModalForm',
   fields: [ 'email', 'username', 'password', 'confirmPassword' ],
   validate
-}, null, { signup, loadUser })(SignupModal);
+}, null, actionCreators as any)(SignupModal);

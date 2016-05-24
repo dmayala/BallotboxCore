@@ -1,12 +1,9 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+
+import { provide } from 'redux-typed';
+import { actionCreators } from '../store/Auth';
+
 import {Input, Button, Alert} from 'react-bootstrap';
-
-import { loginUser } from '../actions';
-
-interface P {    
-    loginUser(details: ILoginDetails): Promise<any>;
-}
 
 interface ILoginDetails {
   username: string;
@@ -36,15 +33,16 @@ class Login extends React.Component<P, S> {
   _onLogin = (e) => {
     e.preventDefault();
     let { username, password } = this.state;
-    this.props.loginUser({ username, password }).then((data) => {
-      if (!data.error) {
-        return this.context.router.push('/');
-      }
+    this.props.loginUser({ username, password });
+    // .then((data) => {
+    //   if (!data.error) {
+    //     return this.context.router.push('/');
+    //   }
       
-      let state = Object.assign({}, this.state);
-      state.success = false;
-      this.setState(state);
-    });
+    //   let state = Object.assign({}, this.state);
+    //   state.success = false;
+    //   this.setState(state);
+    // });
   };
 
   _onChange = (e): void => {
@@ -74,4 +72,12 @@ class Login extends React.Component<P, S> {
   }
 }
 
-export default connect(null, { loginUser })(Login);
+// Selects which part of global state maps to this component, and defines a type for the resulting props
+const provider = provide(
+    null,
+    actionCreators
+);
+type P = typeof provider.allProps;
+export default provider.connect(Login);
+
+//export default connect(null, { loginUser })(Login);

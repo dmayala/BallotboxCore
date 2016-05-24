@@ -2,6 +2,7 @@ import { fetch } from 'domain-task/fetch';
 import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
+import { push } from 'react-router-redux'
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -105,6 +106,7 @@ export const actionCreators = {
       });
 
     dispatch(new LoginUser(details));     
+    dispatch(push('/'));
   },
   
   logoutUser: (): ActionCreator => (dispatch, getState) => {

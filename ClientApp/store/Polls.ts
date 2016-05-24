@@ -15,7 +15,17 @@ export interface PollsState {
 export interface Poll {
   id?: number;
   name: string;
-  choices: string[];
+  choices: Choice[]
+}
+
+export interface Choice {
+  id?: number;
+  name: string;
+  votes?: Vote[]
+}
+
+export interface Vote {
+  id: number;
 }
 
 // -----------------

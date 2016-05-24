@@ -3,8 +3,9 @@ import {Link} from 'react-router';
 import {LinkContainer} from 'react-router-bootstrap';
 import {Navbar, Nav, DropdownButton, MenuItem, NavItem} from 'react-bootstrap';
 
-import { connect } from 'react-redux';
-import { loginUser, logoutUser } from '../actions';
+import { provide } from 'redux-typed';
+import { ApplicationState }  from '../store';
+import { actionCreators } from '../store/Auth';
 
 import LoginModal from '../components/LoginModal';
 import SignupModal from '../components/SignupModal';
@@ -12,13 +13,6 @@ import SignupModal from '../components/SignupModal';
 interface S {
     showLoginModal: boolean;
     showSignupModal: boolean;
-}
-
-interface P {
-  loginUser(details): Promise<any>;
-  logoutUser(): Promise<any>;
-  user: string;
-  isAuthenticated: boolean;
 }
 
 class Header extends React.Component<P, S> {
@@ -50,9 +44,7 @@ class Header extends React.Component<P, S> {
   
   private _onLogout = (e) => {
     e.preventDefault();
-    this.props.logoutUser().then((): void => {
-      this.context.router.push('/');
-    });
+    this.props.logoutUser();
   };
   
   private _loggedInNav = () => {
@@ -94,11 +86,17 @@ class Header extends React.Component<P, S> {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: ApplicationState) {
   return {
     user: state.auth.username,
     isAuthenticated: state.auth.isAuthenticated
   };
 }
 
-export default connect(mapStateToProps, { loginUser, logoutUser })(Header);
+// Selects which part of global state maps to this component, and defines a type for the resulting props
+const provider = provide(
+    mapStateToProps,
+    actionCreators
+);
+type P = typeof provider.allProps;
+export default provider.connect(Header);

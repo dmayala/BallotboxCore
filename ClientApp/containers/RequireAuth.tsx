@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { provide } from 'redux-typed';
+import { ApplicationState }  from '../store';
 
 interface P {
   isAuthenticated: boolean;
@@ -33,9 +34,15 @@ export default function(ComposedComponent) {
     }
   }
 
-  function mapStateToProps(state) {
+  function mapStateToProps(state: ApplicationState) {
     return { isAuthenticated: state.auth.isAuthenticated };
   }
-
-  return connect(mapStateToProps)(Auth);
+  
+  // Selects which part of global state maps to this component, and defines a type for the resulting props
+  const provider = provide(
+      mapStateToProps,
+      null
+  );
+  type P = typeof provider.allProps;
+  return provider.connect(Auth);
 }

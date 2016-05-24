@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519",
+    "redux-thunk": "registry:npm/redux-thunk#1.0.4+20160207154919"
   },
   "globalDependencies": {
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
     "localforage": "registry:dt/localforage#0.0.0+20160316155526",
     "react": "registry:dt/react#0.14.0+20160423065914",
     "react-bootstrap": "registry:dt/react-bootstrap#0.0.0+20160423135514",
@@ -16,6 +16,7 @@
     "redux": "registry:dt/redux#3.3.1+20160326112656",
     "redux-form": "registry:dt/redux-form#4.0.3+20160201090541",
     "validator": "registry:dt/validator#4.5.1+20160316155526",
-    "webpack-env": "registry:dt/webpack-env#1.12.2+20160316155526"
+    "webpack-env": "registry:dt/webpack-env#1.12.2+20160316155526",
+    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160524142046"
   }
 }

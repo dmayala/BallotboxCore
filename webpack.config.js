@@ -5,22 +5,32 @@ var merge = require('extendify')({ isDeep: true, arrays: 'concat' });
 var devConfig = require('./webpack.config.dev');
 var prodConfig = require('./webpack.config.prod');
 var isDevelopment = process.env.ASPNETCORE_ENVIRONMENT === 'Development';
-var extractCSS = new ExtractTextPlugin('site.css');
 
 module.exports = merge({
   resolve: {
-    extensions: ['', '.js', '.jsx', '.ts', '.tsx']
+    extensions: ['', '.js', '.jsx', '.ts', '.tsx', '.scss'],
+    modulesDirectories: [ 'node_modules', 'ClientApp' ]
   },
   module: {
     loaders: [
       { test: /\.ts(x?)$/, include: /ClientApp/, loader: 'babel-loader' },
       { test: /\.ts(x?)$/, include: /ClientApp/, loader: 'ts-loader' },
-      {
+      { 
         test: /\.scss$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'style!css!sass?' +
-                '&includePaths[]=' + encodeURIComponent(path.resolve(__dirname, '../node_modules'))
+        loader: ExtractTextPlugin.extract(
+          // activate source maps via loader query
+          'css?sourceMap!' +
+          'sass?sourceMap' +
+          '&includePaths[]=' +
+            encodeURIComponent(path.resolve(__dirname,
+            '../node_modules')) 
+        )
       },
+      {
+        test: /.(png|woff(2)?|eot|ttf|svg)(\?[a-z0-9=\.]+)?$/,
+        loader: 'url-loader?limit=100000'
+      }
     ]
   },
   entry: {
@@ -32,7 +42,7 @@ module.exports = merge({
     publicPath: '/dist/'
   },
   plugins: [
-    extractCSS,
+    new ExtractTextPlugin('css/app.css'),
     new webpack.DllReferencePlugin({
       context: __dirname,
       manifest: require('./wwwroot/dist/vendor-manifest.json')

@@ -2,8 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Modal, Input, Button, Alert } from 'react-bootstrap';
 
-import { loginUser } from '../actions';
-
 interface ILoginDetails {
   username: string;
   password: string;
@@ -12,7 +10,7 @@ interface ILoginDetails {
 interface P {
   show: boolean;
   onHide(e?: React.SyntheticEvent): void;
-  loginUser(details: ILoginDetails): Promise<any>;
+  loginUser(details: ILoginDetails): any;
 }
 
 interface S extends ILoginDetails {

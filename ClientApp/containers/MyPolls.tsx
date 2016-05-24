@@ -1,33 +1,11 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import {Input, Button, Glyphicon, Accordion, Panel, Modal} from 'react-bootstrap';
 import { PieChart } from 'rd3';
 import {sortBy} from 'lodash';
 
-import { removePoll, fetchPolls } from '../actions';
-
-interface Poll {
-  id: number;
-  name: string;
-  choices: Choice[]
-}
-
-interface Choice {
-  id: number;
-  name: string;
-  votes: Vote[]
-}
-
-interface Vote {
-  id: number;
-}
-
-interface P extends ReactRouter.RouteComponentProps<{}, {}> {
-  fetchPolls(username: string): void;
-  removePoll(pollId: number): void;
-  polls: Poll[];
-  user: string;
-}
+import { provide } from 'redux-typed';
+import { ApplicationState }  from '../store';
+import { actionCreators } from '../store/Polls';
 
 interface S {
   searchTerm: string;
@@ -45,7 +23,7 @@ class MyPolls extends React.Component<P, S> {
   }
   
   componentWillMount() {
-    if (this.props.user) this.props.fetchPolls(this.props.user);
+    if (this.props.user) this.props.requestPolls(this.props.user);
   }
   
   private _getState(): S {
@@ -134,11 +112,17 @@ class MyPolls extends React.Component<P, S> {
   }
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: ApplicationState) {
   return {
     polls: state.polls.all,
     user: state.auth.username
   };
 }
 
-export default connect(mapStateToProps, { fetchPolls, removePoll })(MyPolls);
+// Selects which part of global state maps to this component, and defines a type for the resulting props
+const provider = provide(
+    mapStateToProps,
+    actionCreators
+);
+type P = typeof provider.allProps;
+export default provider.connect(MyPolls);

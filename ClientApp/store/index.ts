@@ -1,11 +1,14 @@
 import { ActionCreatorGeneric } from 'redux-typed';
 import { reducer as formReducer } from 'redux-form';
 import * as Polls from './Polls';
+import * as AddPoll from './AddPoll';
 import * as Auth from './Auth';
+
 
 // The top-level state object
 export interface ApplicationState {
   polls: Polls.PollsState;
+  addPoll: AddPoll.AddPollState;
   auth: Auth.AuthState;
   form: any;
 }
@@ -15,6 +18,7 @@ export interface ApplicationState {
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
   polls: Polls.reducer,
+  addPoll: AddPoll.reducer,
   auth: Auth.reducer,
   form: formReducer
 };

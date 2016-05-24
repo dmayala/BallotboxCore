@@ -2,6 +2,11 @@ import * as React from 'react';
 import {Button} from 'react-bootstrap';
 import SignupModal from './SignupModal';
 
+declare var process:any;
+if (process.env['BROWSER']) {
+  require('stylesheets/components/_Home');
+}
+
 export default class Home extends React.Component<any, any> {
     
   state = this._getState();

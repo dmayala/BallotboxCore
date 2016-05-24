@@ -2,14 +2,12 @@ import * as React from 'react';
 import {Link} from 'react-router';
 import { provide } from 'redux-typed';
 import { ApplicationState }  from '../store';
-import { actionCreators } from '../store/Polls';
+import { actionCreators } from '../store/AddPoll';
 import {Input, Button, Glyphicon, Alert} from 'react-bootstrap';
 
 interface S {
   name: string;
   choices: string[];
-  success: boolean;
-  pollId: number;
 }
 
 class AddPoll extends React.Component<P, S> {
@@ -24,18 +22,13 @@ class AddPoll extends React.Component<P, S> {
   private _getClearState(): S {
     return {
       name: '',
-      choices: [ null, null, null ],
-      success: null,
-      pollId: 0
+      choices: [ null, null, null ]
     }
   }
 
   private _onChange = (pollId: number): void => {
     this.refs.addPoll.reset();
-    let state = this._getClearState();
-    state.success = true;
-    state.pollId = pollId;
-    this.setState(state);
+    this.setState(this._getClearState());
   }
 
   private _onInputChange = (e: React.SyntheticEvent, index: number): void => {
@@ -56,15 +49,9 @@ class AddPoll extends React.Component<P, S> {
     if (name && choices && choices.length > 1) {
       let filled = choices.filter((choice) => { return choice != null; }); 
       if (filled.length === choices.length) {
-        return this.props.addPoll(this.state).then((result) => {    
-          this._onChange(result.payload.data.id);
-        });
+        this.props.addPoll(this.state);
       }
     }
-
-    let state = Object.assign({}, this.state);
-    state.success = false;
-    this.setState(state);
   }
 
   private _addChoice = (e: React.SyntheticEvent): void => {
@@ -94,14 +81,13 @@ class AddPoll extends React.Component<P, S> {
 
     return (
       <div>
-
-        { this.state.success ? (
+        { this.props.success ? (
           <Alert bsStyle="success">
-            <strong>Success!</strong> A new poll has been added <Link to={`polls/${this.state.pollId}`}>here</Link>.
+            <strong>Success!</strong> A new poll has been added <Link to={`polls/${this.props.pollId}`}>here</Link>.
           </Alert>
           ) : null}
 
-        { this.state.success === false ? (
+        { this.props.success === false ? (
           <Alert bsStyle="danger">
             <strong>Error!</strong> Question and Choice fields cannot be blank.
           </Alert>
@@ -132,7 +118,7 @@ class AddPoll extends React.Component<P, S> {
 
 // Selects which part of global state maps to this component, and defines a type for the resulting props
 const provider = provide(
-    null,
+    (state: ApplicationState) => state.addPoll,
     actionCreators
 );
 type P = typeof provider.allProps;

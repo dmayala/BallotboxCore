@@ -1,25 +1,13 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import {Button} from 'react-bootstrap';
 import {sortBy} from 'lodash';
 
-import { fetchPoll, vote } from '../actions';
+import { provide } from 'redux-typed';
+import { ApplicationState }  from '../store';
+import { actionCreators } from '../store/Polls';
 
-interface Poll {
-  id: number;
-  name: string;
-  choices: Choice[]
-}
-
-interface Choice {
-  id: number;
-  name: string;
-}
-
-interface P extends ReactRouter.RouteComponentProps<{ id: number }, {}> {
-  vote(pollId: number, choiceId: number): void;
-  fetchPoll(pollId: number): void;
-  poll: Poll
+interface RouteParams {
+  id: string;
 }
 
 class Poll extends React.Component<P, {}> {
@@ -33,7 +21,7 @@ class Poll extends React.Component<P, {}> {
   };
   
   private componentWillMount() {
-    this.props.fetchPoll(this.props.params.id); 
+    this.props.requestPoll(parseInt(this.props.params.id)); 
   }
 
   private _onVote = (choiceId) => {
@@ -80,10 +68,16 @@ class Poll extends React.Component<P, {}> {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: ApplicationState) {
   return {
     poll: state.polls.poll,
   };
 }
 
-export default connect(mapStateToProps, { fetchPoll, vote })(Poll);
+// Selects which part of global state maps to this component, and defines a type for the resulting props
+const provider = provide(
+    mapStateToProps,
+    actionCreators
+).withExternalProps<{ params: RouteParams }>();
+type P = typeof provider.allProps;
+export default provider.connect(Poll);

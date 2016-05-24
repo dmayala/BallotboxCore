@@ -1,6 +1,12 @@
 import * as React from 'react';
 import {Link} from 'react-router';
 
+declare var process:any;
+if (process.env['BROWSER']) {
+  require('stylesheets/components/_Footer');
+}
+
+
 export default (): React.ReactElement<any> => {
   return (
     <footer className="container footer">
