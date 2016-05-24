@@ -1,5 +1,7 @@
 import { ActionCreatorGeneric } from 'redux-typed';
+import { reducer as formReducer } from 'redux-form';
 import * as Polls from './Polls';
+import * as Auth from './Auth';
 
 // The top-level state object
 export interface ApplicationState {
@@ -10,7 +12,9 @@ export interface ApplicationState {
 // the reducer with the matching name. It's important that the names match exactly, and that the reducer
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
-  polls: Polls.reducer
+  polls: Polls.reducer,
+  auth: Auth.reducer,
+  form: formReducer
 };
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

@@ -24,37 +24,37 @@ export interface Poll {
 // Use @typeName and isActionType for type detection that works even after serialization/deserialization.
 @typeName("REQUEST_POLLS")
 class RequestPolls extends Action {
-    constructor(public username: string) {
-        super();
-    }
+  constructor(public username: string) {
+    super();
+  }
 }
 
 @typeName("RECEIVE_POLLS")
 class ReceivePolls extends Action {
-    constructor(public all: Poll[]) {
-        super();
-    }
+  constructor(public all: Poll[]) {
+    super();
+  }
 }
 
 @typeName("REQUEST_POLLS")
 class RequestPoll extends Action {
-    constructor(public pollId: number) {
-        super();
-    }
+  constructor(public pollId: number) {
+    super();
+  }
 }
 
 @typeName("RECEIVE_POLLS")
 class ReceivePoll extends Action {
-    constructor(public poll: Poll) {
-        super();
-    }
+  constructor(public poll: Poll) {
+    super();
+  }
 }
 
 @typeName("ADD_POLL")
 class AddPoll extends Action {
-    constructor(public details: Poll) {
-        super();
-    }
+  constructor(public details: Poll) {
+    super();
+  }
 }
 
 @typeName("ADD_POLL_COMPLETE")
@@ -62,14 +62,13 @@ class AddPollComplete extends AddPoll {}
 
 @typeName("REMOVE_POLL")
 class RemovePoll extends Action {
-    constructor(public pollId: number) {
-        super();
-    }
+  constructor(public pollId: number) {
+    super();
+  }
 }
 
 @typeName("REMOVE_POLL_COMPLETE")
 class RemovePollComplete extends RemovePoll {}
-
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -115,6 +114,9 @@ export const actionCreators = {
       .then((pollId: number) => {
           dispatch(new RemovePollComplete(pollId));
       });
+  },
+  vote: (pollId: number, choiceId: number): ActionCreator => (dispatch, getState) => {
+    fetch(`/api/polls/${pollId}/choices/${choiceId}`, { method: 'post' });
   }
 };
 
