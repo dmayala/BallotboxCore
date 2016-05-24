@@ -22,7 +22,8 @@ export interface ISignupDetails extends IAuthDetails {
 }
 
 export interface IAuthResponse {
-  message: string;
+  message?: string;
+  username?: string;
 }
 
 // -----------------
@@ -37,6 +38,13 @@ class Signup extends Action {
   }
 }
 
+@typeName("SIGNUP_COMPLETE")
+class SignupComplete extends Action {
+  constructor(public response: IAuthResponse) {
+    super();
+  }
+}
+
 @typeName("LOGIN_USER")
 class LoginUser extends Action {
   constructor(public details: IAuthDetails) {
@@ -44,12 +52,18 @@ class LoginUser extends Action {
   }
 }
 
-@typeName("LOGOUT_USER")
-class LogoutUser extends Action {
-  constructor() {
+@typeName("LOGIN_COMPLETE")
+class LoginUserComplete extends Action {
+  constructor(public response: IAuthResponse) {
     super();
   }
 }
+
+@typeName("LOGOUT_USER")
+class LogoutUser extends Action {}
+
+@typeName("LOGOUT_USER_COMPLETE")
+class LogoutUserComplete extends LogoutUser {}
 
 @typeName("LOAD_USER")
 class LoadUser extends Action {
@@ -63,15 +77,46 @@ class LoadUser extends Action {
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 
 export const actionCreators = {
-  loginUser: (details: IAuthDetails): ActionCreator => (dispatch, getState) => {
-    fetch('/auth/login', {
-      method: 'post'
+  signupUser: (details: ISignupDetails): ActionCreator => (dispatch, getState) => {
+    fetch('/auth/register', {
+      method: 'post',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(details)
     }).then(response => response.json())
       .then((data: IAuthResponse) => {
-        console.log(data);
+        dispatch(new SignupComplete(data));
+      });
+  },
+  
+  loginUser: (details: IAuthDetails): ActionCreator => (dispatch, getState) => {
+    fetch('/auth/login', {
+      method: 'post',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(details)    
+    }).then(response => response.json())
+      .then((data: IAuthResponse) => {
+        dispatch(new LoginUserComplete(data));
       });
 
     dispatch(new LoginUser(details));     
+  },
+  
+  logoutUser: (): ActionCreator => (dispatch, getState) => {
+    fetch('/auth/logout', { method: 'post' })
+      .then(response => response.json())
+      .then(() => { dispatch(new LogoutUserComplete())});
+      
+    dispatch(new LogoutUser());
+  },
+  
+  loadUser: (username: string): ActionCreator => (dispatch, getState) => {
+    dispatch(new LoadUser(username));
   }
 };
 
@@ -80,9 +125,16 @@ export const actionCreators = {
 const unloadedState: AuthState = { username: null, isAuthenticated: false };
 export const reducer: Reducer<AuthState> = (state, action) => {
     
-  if (isActionType(action, LoginUser)) {
-    return { username: action.details.username, isAuthenticated: true };
-  } 
+  switch(action.type) {
+    case SignupComplete.prototype.type: 
+      return { username: (action as SignupComplete).response.username, isAuthenticated: true };
+    case LoginUserComplete.prototype.type:
+      return { username: (action as LoginUserComplete).response.username, isAuthenticated: true };
+    case LogoutUserComplete.prototype.type:
+      return unloadedState;   
+    case LoadUser.prototype.type:
+      return { username: (action as LoadUser).username, isAuthenticated: true };
+  }
 
   // For unrecognized actions (or in cases where actions have no effect), must return the existing state
   // (or default initial state if none was supplied)

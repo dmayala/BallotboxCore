@@ -45,7 +45,7 @@ namespace Ballotbox.Controllers
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return Json(new { Message = "Success" });
+                    return Json(new { Username = user.UserName });
                 }
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -62,7 +62,7 @@ namespace Ballotbox.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return Json(new { Username = model.Username });
+                    return Json(new { Username = model.Username,  });
                 }
                 else
                 {

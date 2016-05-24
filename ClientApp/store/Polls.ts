@@ -58,11 +58,7 @@ class AddPoll extends Action {
 }
 
 @typeName("ADD_POLL_COMPLETE")
-class AddPollComplete extends Action {
-    constructor(public data: Poll) {
-        super();
-    }
-}
+class AddPollComplete extends AddPoll {}
 
 @typeName("REMOVE_POLL")
 class RemovePoll extends Action {
@@ -72,11 +68,7 @@ class RemovePoll extends Action {
 }
 
 @typeName("REMOVE_POLL_COMPLETE")
-class RemovePollComplete extends Action {
-    constructor(public pollId: number) {
-        super();
-    }
-}
+class RemovePollComplete extends RemovePoll {}
 
 
 // ----------------
@@ -104,7 +96,12 @@ export const actionCreators = {
   
   addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
     fetch(`/api/polls`, {
-      method: 'post'
+      method: 'post',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(details)   
     }).then(response => response.json())
       .then((data: Poll) => {
           dispatch(new AddPollComplete(data));
