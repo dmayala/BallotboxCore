@@ -4,6 +4,7 @@
     "redux-thunk": "registry:npm/redux-thunk#1.0.4+20160207154919"
   },
   "globalDependencies": {
+    "axios": "registry:dt/axios#0.9.1+20160317120654",
     "localforage": "registry:dt/localforage#0.0.0+20160316155526",
     "react": "registry:dt/react#0.14.0+20160423065914",
     "react-bootstrap": "registry:dt/react-bootstrap#0.0.0+20160423135514",

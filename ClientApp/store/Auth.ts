@@ -1,4 +1,5 @@
 import { fetch } from 'domain-task/fetch';
+import * as axios from 'axios';
 import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
@@ -10,6 +11,7 @@ import { push } from 'react-router-redux'
 export interface AuthState {
   username: string;
   isAuthenticated: boolean;
+  failureMessage: string;
 }
 
 export interface IAuthDetails {
@@ -53,9 +55,16 @@ class LoginUser extends Action {
   }
 }
 
-@typeName("LOGIN_COMPLETE")
-class LoginUserComplete extends Action {
+@typeName("LOGIN_USER_SUCCESS")
+class LoginUserSuccess extends Action {
   constructor(public response: IAuthResponse) {
+    super();
+  }
+}
+
+@typeName("LOGIN_USER_FAILURE")
+class LoginUserFailure extends Action {
+  constructor(public message: string) {
     super();
   }
 }
@@ -67,7 +76,7 @@ class LogoutUser extends Action {}
 class LogoutUserComplete extends LogoutUser {}
 
 @typeName("LOAD_USER")
-class LoadUser extends Action {
+export class LoadUser extends Action {
   constructor(public username: string) {
     super();
   }
@@ -85,6 +94,7 @@ export const actionCreators = {
         'accept': 'application/json',
         'content-type': 'application/json'
       },
+      credentials: 'same-origin',
       body: JSON.stringify(details)
     }).then(response => response.json())
       .then((data: IAuthResponse) => {
@@ -93,20 +103,20 @@ export const actionCreators = {
   },
   
   loginUser: (details: IAuthDetails): ActionCreator => (dispatch, getState) => {
-    fetch('/auth/login', {
-      method: 'post',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(details)    
-    }).then(response => response.json())
+    axios.post('/auth/login', details)
+      .then(response => {
+        if (response.status !== 200) { throw new Error(); }
+        return response;
+      })
       .then((data: IAuthResponse) => {
-        dispatch(new LoginUserComplete(data));
+        dispatch(new LoginUserSuccess(data));
+        dispatch(push('dashboard'));
+      })
+      .catch((error: Error) => {
+        dispatch(new LoginUserFailure('Invalid username or password'));
       });
 
     dispatch(new LoginUser(details));     
-    dispatch(push('/'));
   },
   
   logoutUser: (): ActionCreator => (dispatch, getState) => {
@@ -124,18 +134,20 @@ export const actionCreators = {
 
 // ----------------
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
-const unloadedState: AuthState = { username: null, isAuthenticated: false };
+const unloadedState: AuthState = { username: null, isAuthenticated: false, failureMessage: '' };
 export const reducer: Reducer<AuthState> = (state, action) => {
     
   switch(action.type) {
     case SignupComplete.prototype.type: 
-      return { username: (action as SignupComplete).response.username, isAuthenticated: true };
-    case LoginUserComplete.prototype.type:
-      return { username: (action as LoginUserComplete).response.username, isAuthenticated: true };
+      return { username: (action as SignupComplete).response.username, isAuthenticated: true, failureMessage: state.failureMessage };
+    case LoginUserSuccess.prototype.type:
+      return { username: (action as LoginUserSuccess).response.username, isAuthenticated: true, failureMessage: state.failureMessage };
+    case LoginUserFailure.prototype.type:
+      return { username: state.username, isAuthenticated: false, failureMessage: (action as LoginUserFailure).message};
     case LogoutUserComplete.prototype.type:
       return unloadedState;   
     case LoadUser.prototype.type:
-      return { username: (action as LoadUser).username, isAuthenticated: true };
+      return { username: (action as LoadUser).username, isAuthenticated: true, failureMessage: state.failureMessage };
   }
 
   // For unrecognized actions (or in cases where actions have no effect), must return the existing state

@@ -1,20 +1,14 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+
+import { provide } from 'redux-typed';
+import { ApplicationState }  from '../store';
+
 import { Modal, Input, Button, Alert } from 'react-bootstrap';
 
-interface ILoginDetails {
+interface S {
   username: string;
   password: string;
-}
-
-interface P {
-  show: boolean;
-  onHide(e?: React.SyntheticEvent): void;
-  loginUser(details: ILoginDetails): any;
-}
-
-interface S extends ILoginDetails {
-  loginFailure: string;
+  loginRequested: boolean;
 }
 
 class LoginModal extends React.Component<P, S> {
@@ -34,32 +28,27 @@ class LoginModal extends React.Component<P, S> {
 
   state: S = this._getInitialState();
   
+  componentWillReceiveProps(nextProps) {
+    if (this.state.loginRequested && nextProps.isAuthenticated) {
+      this._onClose();
+    }
+  }
+  
   private _getInitialState(): S {
     return {
       username: '',
       password: '',
-      loginFailure: ''
+      loginRequested: false
     }
   }
-
+  
   private _onSave = (e): void => {
     e.preventDefault();
+    this.setState(Object.assign({}, this.state, { loginRequested: true }));
     let { username, password } = this.state
-    this.props.loginUser({ username, password }).then((result) => {
-      if (result.payload.status === 200) {
-        this.props.onHide();
-        return this.context.router.push('/dashboard'); 
-      }
-      this._onFailedLogin();
-    });
+    this.props.loginUser({ username, password });
   };
   
-  private _onFailedLogin = (): void => {
-    this.setState(Object.assign({}, this.state, { 
-      loginFailure: 'You have entered an invalid username or password.'
-    }));
-  };
-
   private _onChange = (e): void => {
     let state: S = Object.assign({}, this.state);
     state[e.target.name] = e.target.value; 
@@ -81,8 +70,8 @@ class LoginModal extends React.Component<P, S> {
 
         <Modal.Body>
           <form ref="loginForm">
-            {this.state.loginFailure ? (<Alert bsStyle="danger">
-              { this.state.loginFailure }
+            {this.state.loginRequested && this.props.loginFailure ? (<Alert bsStyle="danger">
+              { this.props.loginFailure }
             </Alert>) : null}
             <Input label="Username" name="username" type="text" value={this.state.username}
             onChange={this._onChange} /> 
@@ -100,4 +89,21 @@ class LoginModal extends React.Component<P, S> {
   }
 }
 
-export default LoginModal;
+function mapStateToProps(state: ApplicationState) {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    loginFailure: state.auth.failureMessage
+  };
+}
+
+// Selects which part of global state maps to this component, and defines a type for the resulting props
+const provider = provide(
+    mapStateToProps,
+    null
+).withExternalProps<{
+  show: boolean;
+  onHide(e?: React.SyntheticEvent): void;
+  loginUser(details: any): any;
+}>();
+type P = typeof provider.allProps;
+export default provider.connect(LoginModal);
