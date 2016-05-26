@@ -17,6 +17,7 @@ using Ballotbox.ViewModels;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using AutoMapper;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.NodeServices;
 
 namespace Ballotbox
 {
@@ -46,13 +47,13 @@ namespace Ballotbox
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddNodeServices();
             services.AddMvc()
                     .AddJsonOptions(opt =>
                     {
                         opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     });
 
-            // Add framework services.
             services.AddEntityFrameworkNpgsql()
                 .AddDbContext<BallotboxContext>(options => 
                     options.UseNpgsql(Configuration["Data:BallotboxContextConnection"]));

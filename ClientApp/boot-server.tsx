@@ -5,6 +5,7 @@ import { match, RouterContext } from 'react-router';
 import createMemoryHistory from 'history/lib/createMemoryHistory';
 import routes from './routes';
 import configureStore from './configureStore';
+import { LoadUser } from './store/Auth';
 
 export default function (params: any): Promise<{ html: string }> {
   return new Promise<{ html: string, globals: { [key: string]: any } }>((resolve, reject) => {
@@ -14,8 +15,16 @@ export default function (params: any): Promise<{ html: string }> {
         throw error;
       }
 
+      const options = params.options || {};
+
       // Build an instance of the application
       const store = configureStore();
+
+      if (options) {
+        // Hydrate store with server data
+        store.dispatch(new LoadUser(options.username));
+      }
+
       const app = (
         <Provider store={ store }>
           <RouterContext {...renderProps} />

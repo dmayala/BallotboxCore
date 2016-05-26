@@ -28,7 +28,7 @@
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
-    "aspnet-prerendering": "^1.0.0",
+    "aspnet-prerendering": "dmayala/custom-prerendering",
     "aspnet-webpack": "^1.0.2",
     "axios": "^0.11.1",
     "babel-core": "^6.5.2",
