@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using AutoMapper;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.AspNetCore.NodeServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Ballotbox
 {
@@ -58,7 +60,26 @@ namespace Ballotbox
                 .AddDbContext<BallotboxContext>(options => 
                     options.UseNpgsql(Configuration["Data:BallotboxContextConnection"]));
 
-            services.AddIdentity<BallotboxUser, IdentityRole>()
+            services.AddIdentity<BallotboxUser, IdentityRole>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
+                config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = ctx =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") &&
+                            ctx.Response.StatusCode == (int)HttpStatusCode.OK)
+                        {
+                            ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        } else
+                        {
+                            ctx.Response.Redirect(ctx.RedirectUri);
+                        }
+                        return Task.FromResult(0);
+                    }
+                };
+            })
                 .AddEntityFrameworkStores<BallotboxContext>()
                 .AddDefaultTokenProviders();
 

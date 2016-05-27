@@ -2,6 +2,7 @@ import { fetch } from 'domain-task/fetch';
 import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
+import * as axios from 'axios';
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -53,7 +54,7 @@ class RequestPoll extends Action {
   }
 }
 
-@typeName("RECEIVE_POLLS")
+@typeName("RECEIVE_POLL")
 class ReceivePoll extends Action {
   constructor(public poll: Poll) {
     super();
@@ -86,7 +87,7 @@ class RemovePollComplete extends RemovePoll {}
 
 export const actionCreators = {
   requestPolls: (username: string): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls/user/${username}`)
+    fetch(`/api/polls/user/${username}`, { credentials: 'include' })
       .then(response => response.json())
       .then((data: Poll[]) => {
         dispatch(new ReceivePolls(data));
@@ -96,25 +97,17 @@ export const actionCreators = {
   },
   
   requestPoll: (pollId: number): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls/${pollId}`)
-      .then(response => response.json())
-      .then((data: Poll) => {
-        dispatch(new ReceivePoll(data));
+    axios.get(`/api/polls/${pollId}`)
+      .then(response => {
+        dispatch(new ReceivePoll(response.data as Poll));
       });
   },
   
   addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls`, {
-      method: 'post',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(details)   
-    }).then(response => response.json())
-      .then((data: Poll) => {
-          dispatch(new AddPollComplete(data));
-      });
+    axios.post('/api/polls', details)
+      .then(response => {
+        dispatch(new AddPollComplete(response.data as Poll));
+      })     
   },
   
   removePoll: (pollId: number): ActionCreator => (dispatch, getState) => {
@@ -125,8 +118,9 @@ export const actionCreators = {
           dispatch(new RemovePollComplete(pollId));
       });
   },
+  
   vote: (pollId: number, choiceId: number): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls/${pollId}/choices/${choiceId}`, { method: 'post' });
+    axios.post(`/api/polls/${pollId}/choices/${choiceId}`, { method: 'post' });
   }
 };
 

@@ -1,4 +1,4 @@
-import { fetch } from 'domain-task/fetch';
+import * as axios from 'axios';
 import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
@@ -41,21 +41,15 @@ class AddPollFailure extends Action {}
 
 export const actionCreators = {
   addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls`, {
-      method: 'post',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(details)   
-    }).then(response => response.json())
-      .then((data: Poll) => {
-        dispatch(new AddPollSuccess(data));
+    axios.post('/api/polls', details)
+      .then(response => {
+        if (response.status !== 201) { throw new Error(); }
+        dispatch(new AddPollSuccess(response.data as Poll));
       })
-      .catch(() => {
+      .catch((error: Error) => {
         dispatch(new AddPollFailure());
       });
-    
+         
     new AddPoll(details);
   }
 };

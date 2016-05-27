@@ -20,8 +20,8 @@ export default function (params: any): Promise<{ html: string }> {
       // Build an instance of the application
       const store = configureStore();
 
-      if (options) {
-        // Hydrate store with server data
+      // Hydrate store with server data
+      if (options.username) {
         store.dispatch(new LoadUser(options.username));
       }
 
