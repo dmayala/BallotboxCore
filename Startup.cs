@@ -1,30 +1,37 @@
-using System;
-using System.Net;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using Ballotbox.Database;
+using Ballotbox.Models;
+using Ballotbox.Token;
+using Ballotbox.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.NodeServices;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Ballotbox.Models;
-using Ballotbox.Database;
-using Ballotbox.Services;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Net;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
-using Ballotbox.ViewModels;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using AutoMapper;
-using Microsoft.AspNetCore.SpaServices.Webpack;
-using Microsoft.AspNetCore.NodeServices;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Linq;
 
 namespace Ballotbox
 {
     public class Startup
     {
+        const string TokenAudience = "ExampleAudience";
+        const string TokenIssuer = "ExampleIssuer";
+        private RsaSecurityKey key;
+        private TokenAuthOptions tokenOptions;
+
         public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
@@ -49,6 +56,17 @@ namespace Ballotbox
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            RSAParameters keyParams = RSAKeyUtils.GetRandomKey();
+            key = new RsaSecurityKey(RSAKeyUtils.GetRandomKey());
+            tokenOptions = new TokenAuthOptions()
+            {
+                Audience = TokenAudience,
+                Issuer = TokenIssuer,
+                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256Signature)
+            };
+
+            services.AddSingleton<TokenAuthOptions>(tokenOptions);
+
             services.AddNodeServices();
             services.AddMvc()
                     .AddJsonOptions(opt =>
@@ -83,12 +101,13 @@ namespace Ballotbox
                 .AddEntityFrameworkStores<BallotboxContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder().AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme).RequireAuthenticatedUser().Build());
+            });
+
             services.AddTransient<BallotboxContextSeedData>();
-            services.AddScoped<IBallotboxRepository, BallotboxRepository>();
-            
-            // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddScoped<IBallotboxRepository, BallotboxRepository>();       
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -117,6 +136,25 @@ namespace Ballotbox
 
             app.UseStaticFiles();     
             app.UseIdentity();
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    // Basic settings - signing key to validate with, audience and issuer.
+                    IssuerSigningKey = key,
+                    ValidAudience = tokenOptions.Audience,
+                    ValidIssuer = tokenOptions.Issuer,
+
+                    // When receiving a token, check that it is still valid.
+                    ValidateLifetime = true,
+
+                    // This defines the maximum allowable clock skew - i.e. provides a tolerance on the token expiry time 
+                    // when validating the lifetime. As we're creating the tokens locally and validating them on the same 
+                    // machines which should have synchronised time, this can be set to zero. Where external tokens are
+                    // used, some leeway here could be useful.
+                    ClockSkew = TimeSpan.FromMinutes(0)
+                }
+            });
             loggerFactory.AddConsole();
             app.UseMvc(routes =>
             {

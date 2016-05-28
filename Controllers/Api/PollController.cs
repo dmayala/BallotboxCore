@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Ballotbox.Controllers.Api
 {
-    [Authorize]
+    [Authorize("Bearer")]
     [Route("/api/polls")]
     public class PollController : Controller
     {

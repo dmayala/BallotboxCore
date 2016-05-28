@@ -1,13 +1,18 @@
 ﻿using Ballotbox.Models;
+using Ballotbox.Token;
 using Ballotbox.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace Ballotbox.Controllers
@@ -17,15 +22,18 @@ namespace Ballotbox.Controllers
         private readonly UserManager<BallotboxUser> _userManager;
         private readonly SignInManager<BallotboxUser> _signInManager;
         private readonly ILogger _logger;
+        private readonly TokenAuthOptions _tokenOptions;
 
         public AuthController(
             UserManager<BallotboxUser> userManager,
             SignInManager<BallotboxUser> signInManager,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            TokenAuthOptions tokenOptions)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = loggerFactory.CreateLogger<AuthController>();
+            _tokenOptions = tokenOptions;
         }
 
         [HttpPost]
@@ -62,7 +70,9 @@ namespace Ballotbox.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return Json(new { Username = model.Username,  });
+                    DateTime? expires = DateTime.UtcNow.AddDays(30);
+                    var token = GetToken(expires);
+                    return Json(new { Username = model.Username, Authenticated = true, EntityId = 1, Token = token, TokenExpires = expires });
                 }
                 else
                 {
@@ -83,6 +93,25 @@ namespace Ballotbox.Controllers
             }
 
             return Json(new {});
+        }
+
+        private string GetToken(DateTime? expires)
+        {
+            var handler = new JwtSecurityTokenHandler();
+
+            // Here, you should create or look up an identity for the user which is being authenticated.
+            // For now, just creating a simple generic identity.
+            var identity = (ClaimsIdentity)User.Identity;
+
+            var securityToken = handler.CreateToken(new SecurityTokenDescriptor()
+            {
+                Issuer = _tokenOptions.Issuer,
+                Audience = _tokenOptions.Audience,
+                SigningCredentials = _tokenOptions.SigningCredentials,
+                Subject = identity,
+                Expires = expires
+            });
+            return handler.WriteToken(securityToken);
         }
     }
 }
