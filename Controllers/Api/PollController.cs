@@ -39,7 +39,7 @@ namespace Ballotbox.Controllers.Api
         [Route("user/{userName}")]
         public async Task<JsonResult> GetUserPolls(string userName)
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
             {
                 var polls = _repository.GetAllPollsByUserId(user.Id);
@@ -77,7 +77,7 @@ namespace Ballotbox.Controllers.Api
                 try
                 {
                     var newPoll = Mapper.Map<Poll>(Mapper.Map<PollViewModel>(vm));
-                    var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                    var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
                     newPoll.User = user;
 
@@ -120,8 +120,8 @@ namespace Ballotbox.Controllers.Api
         [Route("{pollId}/choices/{choiceId}")]
         public async Task<JsonResult> Vote(int choiceId) {
             var newVote = new Vote();
-            
-            var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             newVote.User = user;
             
             _repository.AddVote(choiceId, newVote);
