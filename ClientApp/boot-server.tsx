@@ -21,8 +21,9 @@ export default function (params: any): Promise<{ html: string }> {
       const store = configureStore();
 
       // Hydrate store with server data
-      if (options.username) {
-        store.dispatch(new LoadUser(options.username));
+      if (options.username && options.token) {
+        let { username, token } = options;
+        store.dispatch(new LoadUser({ username, token }));
       }
 
       const app = (

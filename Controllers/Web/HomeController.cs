@@ -11,6 +11,7 @@ namespace Ballotbox.Controllers.Web
         public IActionResult Index()
         {
             ViewData["username"] = User.Identity.Name;
+            ViewData["token"] = Request.Cookies["bearer"];
             return View();
         }
 

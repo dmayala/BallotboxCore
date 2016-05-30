@@ -3,6 +3,7 @@ using Ballotbox.Token;
 using Ballotbox.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -70,9 +71,11 @@ namespace Ballotbox.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
+                    var user = await _userManager.FindByNameAsync(model.Username);
                     DateTime? expires = DateTime.UtcNow.AddDays(30);
-                    var token = GetToken(expires);
-                    return Json(new { Username = model.Username, Authenticated = true, EntityId = 1, Token = token, TokenExpires = expires });
+                    var token = GetToken(user, expires);
+                    Response.Cookies.Append("bearer", token);
+                    return Json(new { Username = user.UserName });
                 }
                 else
                 {
@@ -95,13 +98,12 @@ namespace Ballotbox.Controllers
             return Json(new {});
         }
 
-        private string GetToken(DateTime? expires)
+        private string GetToken(IdentityUser user, DateTime? expires)
         {
             var handler = new JwtSecurityTokenHandler();
 
-            // Here, you should create or look up an identity for the user which is being authenticated.
-            // For now, just creating a simple generic identity.
-            var identity = (ClaimsIdentity)User.Identity;
+            var identity = new ClaimsIdentity(new GenericIdentity(user.UserName, "TokenAuth"),
+                new[] { new Claim(ClaimTypes.NameIdentifier, user.Id) });
 
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor()
             {

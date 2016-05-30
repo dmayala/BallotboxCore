@@ -10,6 +10,7 @@ import { push } from 'react-router-redux'
 
 export interface AuthState {
   username: string;
+  token: string;
   isAuthenticated: boolean;
   failureMessage: string;
 }
@@ -17,6 +18,11 @@ export interface AuthState {
 export interface IAuthDetails {
   username: string;
   password: string;
+}
+
+export interface ITokenizedDetails {
+  username: string;
+  token: string;
 }
 
 export interface ISignupDetails extends IAuthDetails {
@@ -77,7 +83,7 @@ class LogoutUserComplete extends LogoutUser {}
 
 @typeName("LOAD_USER")
 export class LoadUser extends Action {
-  constructor(public username: string) {
+  constructor(public details: ITokenizedDetails) {
     super();
   }
 }
@@ -127,27 +133,28 @@ export const actionCreators = {
     dispatch(new LogoutUser());
   },
   
-  loadUser: (username: string): ActionCreator => (dispatch, getState) => {
-    dispatch(new LoadUser(username));
+  loadUser: (details: ITokenizedDetails): ActionCreator => (dispatch, getState) => {
+    dispatch(new LoadUser(details));
   }
 };
 
 // ----------------
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
-const unloadedState: AuthState = { username: null, isAuthenticated: false, failureMessage: '' };
+const unloadedState: AuthState = { username: null, token: null, isAuthenticated: false, failureMessage: '' };
 export const reducer: Reducer<AuthState> = (state, action) => {
     
   switch(action.type) {
-    case SignupComplete.prototype.type: 
-      return { username: (action as SignupComplete).response.username, isAuthenticated: true, failureMessage: state.failureMessage };
+    case SignupComplete.prototype.type:
+      return { username: (action as SignupComplete).response.username, token: state.token, isAuthenticated: true, failureMessage: state.failureMessage };
     case LoginUserSuccess.prototype.type:
-      return { username: (action as LoginUserSuccess).response.username, isAuthenticated: true, failureMessage: state.failureMessage };
+      return { username: (action as LoginUserSuccess).response.username, token: state.token, isAuthenticated: true, failureMessage: state.failureMessage };
     case LoginUserFailure.prototype.type:
-      return { username: state.username, isAuthenticated: false, failureMessage: (action as LoginUserFailure).message};
+      return { username: state.username, token: state.token, isAuthenticated: false, failureMessage: (action as LoginUserFailure).message};
     case LogoutUserComplete.prototype.type:
       return unloadedState;   
     case LoadUser.prototype.type:
-      return { username: (action as LoadUser).username, isAuthenticated: true, failureMessage: state.failureMessage };
+      let { username, token } = (action as LoadUser).details;
+      return { username, token, isAuthenticated: true, failureMessage: state.failureMessage };
   }
 
   // For unrecognized actions (or in cases where actions have no effect), must return the existing state

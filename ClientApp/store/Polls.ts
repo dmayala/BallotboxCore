@@ -87,7 +87,12 @@ class RemovePollComplete extends RemovePoll {}
 
 export const actionCreators = {
   requestPolls: (username: string): ActionCreator => (dispatch, getState) => {
-    fetch(`/api/polls/user/${username}`, { credentials: 'include' })
+    let bearer = getState().auth.token;
+    fetch(`/api/polls/user/${username}`, {
+      headers: {
+        'Authorization': `Bearer ${bearer}`
+      }
+    })
       .then(response => response.json())
       .then((data: Poll[]) => {
         dispatch(new ReceivePolls(data));
