@@ -1,7 +1,6 @@
 using AutoMapper;
 using Ballotbox.Database;
 using Ballotbox.Models;
-using Ballotbox.Token;
 using Ballotbox.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -17,19 +16,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Net;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
+using System.Text;
 
 namespace Ballotbox
 {
     public class Startup
     {
-        const string TokenAudience = "ExampleAudience";
-        const string TokenIssuer = "ExampleIssuer";
-        private RsaSecurityKey key;
+        private SymmetricSecurityKey key;
         private TokenAuthOptions tokenOptions;
 
         public Startup(IHostingEnvironment env)
@@ -56,13 +53,12 @@ namespace Ballotbox
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            RSAParameters keyParams = RSAKeyUtils.GetRandomKey();
-            key = new RsaSecurityKey(RSAKeyUtils.GetRandomKey());
+            key = new SymmetricSecurityKey(Encoding.Unicode.GetBytes(Configuration["Token:Secret"]));
             tokenOptions = new TokenAuthOptions()
             {
-                Audience = TokenAudience,
-                Issuer = TokenIssuer,
-                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256Signature)
+                Audience = Configuration["Token:Audience"],
+                Issuer = Configuration["Token:Issuer"],
+                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             };
 
             services.AddSingleton<TokenAuthOptions>(tokenOptions);

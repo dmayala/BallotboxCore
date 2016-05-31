@@ -15,10 +15,10 @@
         "Hosting:Environment": "Development"
       }
     },
-    "web": {
-      "commandName": "web",
+    "BallotboxCore": {
+      "commandName": "Project",
       "environmentVariables": {
-        "Hosting:Environment": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
