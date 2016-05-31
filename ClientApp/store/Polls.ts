@@ -2,7 +2,6 @@ import { fetch } from 'domain-task/fetch';
 import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
-import * as axios from 'axios';
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -102,22 +101,42 @@ export const actionCreators = {
   },
   
   requestPoll: (pollId: number): ActionCreator => (dispatch, getState) => {
-    axios.get(`/api/polls/${pollId}`)
-      .then(response => {
-        dispatch(new ReceivePoll(response.data as Poll));
-      });
+    let bearer = getState().auth.token;
+      fetch(`/api/polls/${pollId}`, {
+        headers: {
+          'Authorization': `Bearer ${bearer}`
+        }
+      })
+        .then(response => response.json())
+        .then((data: Poll) => {
+          dispatch(new ReceivePoll(data));
+        });
   },
   
   addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
-    axios.post('/api/polls', details)
-      .then(response => {
-        dispatch(new AddPollComplete(response.data as Poll));
-      })     
+    let bearer = getState().auth.token;
+    fetch('/api/polls', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${bearer}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(details)
+      })
+      .then(response => response.json())
+      .then((data: Poll) => {
+        dispatch(new AddPollComplete(data));
+      });   
   },
   
   removePoll: (pollId: number): ActionCreator => (dispatch, getState) => {
+    let bearer = getState().auth.token;
     fetch(`/api/polls/${pollId}`, {
-      method: 'delete'
+      method: 'delete',
+      headers: {
+        'Authorization': `Bearer ${bearer}`,
+      }
     }).then(response => response.json())
       .then((pollId: number) => {
           dispatch(new RemovePollComplete(pollId));
@@ -125,7 +144,13 @@ export const actionCreators = {
   },
   
   vote: (pollId: number, choiceId: number): ActionCreator => (dispatch, getState) => {
-    axios.post(`/api/polls/${pollId}/choices/${choiceId}`, { method: 'post' });
+    let bearer = getState().auth.token;
+    fetch(`/api/polls/${pollId}/choices/${choiceId}`, {
+      method: 'post',
+      headers: {
+        'Authorization': `Bearer ${bearer}`,
+      }
+    });
   }
 };
 

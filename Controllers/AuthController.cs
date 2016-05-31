@@ -1,5 +1,4 @@
 ﻿using Ballotbox.Models;
-using Ballotbox.Token;
 using Ballotbox.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +44,7 @@ namespace Ballotbox.Controllers
                 if (await _userManager.FindByEmailAsync(model.Email) != null)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { Message = "This email is associated with another account." });
+                    return Json(new { StatusCode = Response.StatusCode, Message = "This email is associated with another account." });
                 }
 
                 var user = new BallotboxUser() { UserName = model.Username, Email = model.Email };
@@ -54,11 +53,14 @@ namespace Ballotbox.Controllers
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return Json(new { Username = user.UserName });
+                    var loggedInUser = await _userManager.FindByNameAsync(user.UserName);
+                    DateTime? expires = DateTime.UtcNow.AddDays(30);
+                    var token = GetToken(loggedInUser, expires);
+                    return Json(new { Username = loggedInUser.UserName, Token = token });
                 }
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { Message = "This username is already taken." });
+            return Json(new { StatusCode = Response.StatusCode, Message = "This username is already taken." });
 
         }
 

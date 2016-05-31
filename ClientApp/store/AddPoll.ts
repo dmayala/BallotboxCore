@@ -41,10 +41,22 @@ class AddPollFailure extends Action {}
 
 export const actionCreators = {
   addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
-    axios.post('/api/polls', details)
+    let bearer = getState().auth.token;
+    fetch('/api/polls', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${bearer}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(details)
+      })
       .then(response => {
-        if (response.status !== 201) { throw new Error(); }
-        dispatch(new AddPollSuccess(response.data as Poll));
+        if (!response.ok) { throw Error(response.statusText); }
+        return response.json();
+      })
+      .then((data: Poll) => {
+        dispatch(new AddPollSuccess(data));
       })
       .catch((error: Error) => {
         dispatch(new AddPollFailure());

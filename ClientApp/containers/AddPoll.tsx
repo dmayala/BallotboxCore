@@ -83,7 +83,7 @@ class AddPoll extends React.Component<P, S> {
       <div>
         { this.props.success ? (
           <Alert bsStyle="success">
-            <strong>Success!</strong> A new poll has been added <Link to={`polls/${this.props.pollId}`}>here</Link>.
+            <strong>Success!</strong> A new poll has been added <Link to={`/polls/${this.props.pollId}`}>here</Link>.
           </Alert>
           ) : null}
 

@@ -8,7 +8,7 @@ import { actionCreators } from '../store/Auth';
 interface P extends ReduxFormProps {
   onHide(e?: React.SyntheticEvent): void;
   show: boolean;
-  signup?(props: any): Promise<any>;
+  signupUser?(props: any): void;
   loadUser?(details: { username: string; token: string; }): void;
   submitFailure?: string;
 }
@@ -29,12 +29,29 @@ class SignupModal extends React.Component<P, {}> {
   context: {
     router: ReactRouter.RouterOnContext;
   };
+  
+  state = this._getInitialState();
+  
+  private _getInitialState() {
+    return {
+      signupRequested: false
+    }
+  }
+  
+  
+  componentWillReceiveProps(nextProps) {
+    if (this.state.signupRequested && nextProps.isAuthenticated) {
+      this._onClose();
+    }
+  }
 
   private _onSubmit = (props: IFieldNames): void => {
-    this.props.signup(props);
+    this.setState(Object.assign({}, this.state, { signupRequested: true }));
+    this.props.signupUser(props);
   };
   
   private _onClose = (): void => {
+    this.setState(this._getInitialState());
     this.props.resetForm();
     this.props.onHide();
   };

@@ -35,6 +35,7 @@ export interface IAuthResponse {
   message?: string;
   username?: string;
   token?: string;
+  status?: number;
 }
 
 // -----------------
@@ -49,9 +50,16 @@ class Signup extends Action {
   }
 }
 
-@typeName("SIGNUP_COMPLETE")
-class SignupComplete extends Action {
+@typeName("SIGNUP_SUCCESS")
+class SignupSuccess extends Action {
   constructor(public response: IAuthResponse) {
+    super();
+  }
+}
+
+@typeName("SIGNUP_FAILURE")
+class SignupFailure extends Action {
+  constructor(public message: string) {
     super();
   }
 }
@@ -104,9 +112,16 @@ export const actionCreators = {
       },
       credentials: 'same-origin',
       body: JSON.stringify(details)
-    }).then(response => response.json())
+    })
+      .then(response => response.json())
       .then((data: IAuthResponse) => {
-        dispatch(new SignupComplete(data));
+        if (data.status) { throw new Error(data.message); }  
+        cookie.save('bearer', data.token);
+        dispatch(new SignupSuccess({ username: data.username, token: data.token }));
+        dispatch(push('dashboard'));
+      })
+      .catch((error: Error) => {
+        dispatch(new SignupFailure(error.message));
       });
   },
   
@@ -151,8 +166,10 @@ const unloadedState: AuthState = { username: null, token: null, isAuthenticated:
 export const reducer: Reducer<AuthState> = (state, action) => {
     
   switch(action.type) {
-    case SignupComplete.prototype.type:
-      return { username: (action as SignupComplete).response.username, token: state.token, isAuthenticated: true, failureMessage: state.failureMessage };
+    case SignupSuccess.prototype.type:
+      return { username: (action as SignupSuccess).response.username, token: (action as SignupSuccess).response.token, isAuthenticated: true, failureMessage: state.failureMessage };
+    case SignupFailure.prototype.type:
+      return { username: state.username, token: state.token, isAuthenticated: false, failureMessage: (action as SignupFailure).message};
     case LoginUserSuccess.prototype.type:
       let response = (action as LoginUserSuccess).response;
       return { username: response.username, token: response.token, isAuthenticated: true, failureMessage: state.failureMessage };
