@@ -8,7 +8,7 @@ namespace Ballotbox.Token
     {
         public static RSAParameters GetRandomKey()
         {
-            using (var rsa = new RSACryptoServiceProvider(2048))
+            using (var rsa = new RSAOpenSsl(2048))
             {
                 try
                 {
@@ -16,7 +16,7 @@ namespace Ballotbox.Token
                 }
                 finally
                 {
-                    rsa.PersistKeyInCsp = false;
+                    //rsa.PersistKeyInCsp = false;
                 }
             }
         }

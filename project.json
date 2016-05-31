@@ -61,7 +61,7 @@
         "portable-net45+win8"
       ],
       "dependencies": {
-        "System.Security.Cryptography.Csp": "4.0.0-rc2-24027"
+        "System.Security.Cryptography.OpenSsl": "4.0.0-rc2-24027"
       }
     }
   },

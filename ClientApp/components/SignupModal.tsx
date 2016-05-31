@@ -9,11 +9,8 @@ interface P extends ReduxFormProps {
   onHide(e?: React.SyntheticEvent): void;
   show: boolean;
   signup?(props: any): Promise<any>;
-  loadUser?(username: string): void;
-}
-
-interface S {
-  submitFailure: string;
+  loadUser?(details: { username: string; token: string; }): void;
+  submitFailure?: string;
 }
 
 interface IFieldNames { 
@@ -23,34 +20,21 @@ interface IFieldNames {
   confirmPassword: string;
 } 
 
-class SignupModal extends React.Component<P, S> {
+class SignupModal extends React.Component<P, {}> {
     
   static contextTypes: React.ValidationMap<any> = {
     router: React.PropTypes.object
   };
   
-  state: S = {
-    submitFailure: ''
-  }
-    
   context: {
     router: ReactRouter.RouterOnContext;
   };
 
   private _onSubmit = (props: IFieldNames): void => {
-    this.props.signup(props).then((result) => {
-      if (result.payload.status === 200) {
-        this.props.onHide();
-        this.props.loadUser(props.username);
-        this.context.router.push('/dashboard'); 
-      } else {
-        this.setState({ submitFailure: result.payload.data.message });
-      }
-    });
+    this.props.signup(props);
   };
   
   private _onClose = (): void => {
-    this.setState({ submitFailure: '' });
     this.props.resetForm();
     this.props.onHide();
   };
@@ -66,8 +50,8 @@ class SignupModal extends React.Component<P, S> {
 
         <Modal.Body>
           <form>
-            {this.state.submitFailure ? (<Alert bsStyle="danger">
-              { this.state.submitFailure }
+            {this.props.submitFailure ? (<Alert bsStyle="danger">
+              { this.props.submitFailure }
             </Alert>) : null}
             <div className={ `form-group ${email.touched && email.invalid ? 'has-error' : ''}`} >
               <label className="control-label">Email</label>
@@ -136,4 +120,7 @@ export default reduxForm({
   form: 'SignupModalForm',
   fields: [ 'email', 'username', 'password', 'confirmPassword' ],
   validate
-}, null, actionCreators as any)(SignupModal);
+}, state => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  submitFailure: state.auth.failureMessage
+}), actionCreators as any)(SignupModal);

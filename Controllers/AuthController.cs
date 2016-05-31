@@ -74,8 +74,7 @@ namespace Ballotbox.Controllers
                     var user = await _userManager.FindByNameAsync(model.Username);
                     DateTime? expires = DateTime.UtcNow.AddDays(30);
                     var token = GetToken(user, expires);
-                    Response.Cookies.Append("bearer", token);
-                    return Json(new { Username = user.UserName });
+                    return Json(new { Username = user.UserName, Token = token });
                 }
                 else
                 {

@@ -4,6 +4,7 @@ import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
 import { push } from 'react-router-redux'
+import * as cookie from 'react-cookie';
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -33,6 +34,7 @@ export interface ISignupDetails extends IAuthDetails {
 export interface IAuthResponse {
   message?: string;
   username?: string;
+  token?: string;
 }
 
 // -----------------
@@ -114,8 +116,10 @@ export const actionCreators = {
         if (response.status !== 200) { throw new Error(); }
         return response;
       })
-      .then((data: IAuthResponse) => {
-        dispatch(new LoginUserSuccess(data));
+      .then((response) => {
+        let data: IAuthResponse = (response as any).data;
+        cookie.save('bearer', data.token);
+        dispatch(new LoginUserSuccess({ username: data.username, token: data.token }));
         dispatch(push('dashboard'));
       })
       .catch((error: Error) => {
@@ -128,7 +132,10 @@ export const actionCreators = {
   logoutUser: (): ActionCreator => (dispatch, getState) => {
     fetch('/auth/logout', { method: 'post' })
       .then(response => response.json())
-      .then(() => { dispatch(new LogoutUserComplete())});
+      .then(() => { 
+        cookie.remove('bearer');
+        dispatch(new LogoutUserComplete());
+      });
       
     dispatch(new LogoutUser());
   },
@@ -147,13 +154,14 @@ export const reducer: Reducer<AuthState> = (state, action) => {
     case SignupComplete.prototype.type:
       return { username: (action as SignupComplete).response.username, token: state.token, isAuthenticated: true, failureMessage: state.failureMessage };
     case LoginUserSuccess.prototype.type:
-      return { username: (action as LoginUserSuccess).response.username, token: state.token, isAuthenticated: true, failureMessage: state.failureMessage };
+      let response = (action as LoginUserSuccess).response;
+      return { username: response.username, token: response.token, isAuthenticated: true, failureMessage: state.failureMessage };
     case LoginUserFailure.prototype.type:
       return { username: state.username, token: state.token, isAuthenticated: false, failureMessage: (action as LoginUserFailure).message};
     case LogoutUserComplete.prototype.type:
       return unloadedState;   
     case LoadUser.prototype.type:
-      let { username, token } = (action as LoadUser).details;
+      const { username, token } = (action as LoadUser).details;
       return { username, token, isAuthenticated: true, failureMessage: state.failureMessage };
   }
 
