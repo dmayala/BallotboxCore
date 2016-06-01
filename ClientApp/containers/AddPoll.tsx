@@ -11,8 +11,6 @@ interface S {
 }
 
 class AddPoll extends React.Component<P, S> {
-
-  state = this._getClearState(); 
   
   refs: {
     [string: string]: any;
@@ -25,8 +23,12 @@ class AddPoll extends React.Component<P, S> {
       choices: [ null, null, null ]
     }
   }
+  
+  componentWillMount() {
+    this.state = this._getClearState();
+  }
 
-  private _onChange = (pollId: number): void => {
+  private _onChange = (): void => {
     this.refs.addPoll.reset();
     this.setState(this._getClearState());
   }
@@ -49,9 +51,11 @@ class AddPoll extends React.Component<P, S> {
     if (name && choices && choices.length > 1) {
       let filled = choices.filter((choice) => { return choice != null; }); 
       if (filled.length === choices.length) {
-        this.props.addPoll(this.state);
+        return this.props.addPoll(this.state);
       }
     }
+    
+    this.props.markFailure();
   }
 
   private _addChoice = (e: React.SyntheticEvent): void => {
