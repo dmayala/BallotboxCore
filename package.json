@@ -4,7 +4,7 @@
   "scripts": {
     "start": "dotnet run",
     "build": "dotnet restore && typings install && webpack --config webpack.config.vendor.js && webpack",
-    "dev": "gulp watch",
+    "dev": "export ASPNETCORE_ENVIRONMENT=Development && npm run start",
     "postinstall": "npm run build"
   },
   "devDependencies": {

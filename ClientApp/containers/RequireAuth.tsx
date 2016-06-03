@@ -18,7 +18,11 @@ export default function(ComposedComponent) {
     };
 
     componentWillMount() {
+      console.log('in this here component');
+      console.log(this.props.isAuthenticated);
       if (!this.props.isAuthenticated) {
+        console.log(this.context.router);
+        console.log('were pushing it!');
         this.context.router.push('/');
       }
     }
@@ -30,7 +34,10 @@ export default function(ComposedComponent) {
     }
 
     render() {
-      return <ComposedComponent {...this.props} />
+      if (this.props.isAuthenticated) {
+        return <ComposedComponent {...this.props} />
+      }
+      return <div className="container">Loading...</div>;
     }
   }
 
