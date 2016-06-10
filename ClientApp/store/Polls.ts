@@ -46,7 +46,7 @@ class ReceivePolls extends Action {
   }
 }
 
-@typeName("REQUEST_POLLS")
+@typeName("REQUEST_POLL")
 class RequestPoll extends Action {
   constructor(public pollId: number) {
     super();
