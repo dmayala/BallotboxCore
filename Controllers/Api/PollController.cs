@@ -69,6 +69,22 @@ namespace Ballotbox.Controllers.Api
             return Json(new { Message = "Failed" });
         }
 
+        [HttpGet]
+        [Route("random")]
+        public JsonResult GetRandomPoll()
+        {
+            var poll = _repository.GetRandomPoll();
+
+            if (poll != null)
+            {
+                var result = Mapper.Map<PollViewModel>(_repository.GetRandomPoll());
+                return Json(result);
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed" });
+        }
+
         [HttpPost]
         public async Task<JsonResult> Post([FromBody]AddPollViewModel vm)
         {

@@ -15,5 +15,6 @@ namespace Ballotbox.Database
         void RemovePollById(int pollId);
         void AddVote(int choiceId, Vote newVote);
         bool SaveAll();
+        Poll GetRandomPoll();
     }
 }

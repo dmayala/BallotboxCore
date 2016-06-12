@@ -72,8 +72,24 @@ namespace Ballotbox.Database
                 return null;
             }
         }
-        
-        
+
+        public Poll GetRandomPoll()
+        {
+            try
+            {
+                int toSkip = new Random().Next(0, _context.Polls.Count() - 1);
+                return _context.Polls.Include(p => p.Choices)
+                                     .OrderBy(r => Guid.NewGuid()).Skip(toSkip).Take(1).First();
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Could not get random poll from database", ex);
+                return null;
+            }
+        }
+
         public void AddVote(int choiceId, Vote newVote) {
             try {
                 var choice = _context.Choices.Include(c => c.Votes)
