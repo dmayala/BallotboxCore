@@ -24,8 +24,14 @@ class AddPoll extends React.Component<P, S> {
     }
   }
   
-  componentWillMount() {
+  private componentWillMount() {
     this.state = this._getClearState();
+  }
+
+  private componentWillReceiveProps(nextProps) {
+    if (nextProps.success) {
+      this.state = this._getClearState();
+    }
   }
 
   private _onChange = (): void => {

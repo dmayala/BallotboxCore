@@ -19,8 +19,6 @@ export default function(ComposedComponent) {
 
     componentWillMount() {
       if (!this.props.isAuthenticated) {
-        console.log(this.context.router);
-        console.log('were pushing it!');
         this.context.router.push('/');
       }
     }

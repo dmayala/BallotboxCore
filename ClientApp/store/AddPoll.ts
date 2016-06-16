@@ -41,8 +41,6 @@ class AddPollFailure extends Action {}
 
 export const actionCreators = {
   addPoll: (details: Poll): ActionCreator => (dispatch, getState) => {
-    console.log('hi');
-    console.log(details);
     let bearer = getState().auth.token;
     fetch('/api/polls', {
         method: 'POST',
