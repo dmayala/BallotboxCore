@@ -72,8 +72,30 @@ namespace Ballotbox.Database
                 return null;
             }
         }
-        
-        
+
+        public Poll GetRandomPoll(string userId)
+        {
+            try
+            {
+                var votedPolls = _context.Polls.Where(p => p.Choices.Any(
+                                            c => c.Votes.Any(v => v.User.Id == userId))
+                                         ).Select(p => p.Id).ToList();
+
+                var unvotedPolls = _context.Polls.Include(p => p.Choices)
+                                           .Where(p => !votedPolls.Contains(p.Id));
+
+                int toSkip = new Random().Next(0, unvotedPolls.Count() - 1);
+
+                return unvotedPolls.OrderBy(p => Guid.NewGuid()).Skip(toSkip).Take(1).First();
+            }﻿
+﻿
+            catch (Exception ex)
+            {
+                _﻿logger.LogError("Could not get random poll from database", ex);
+                return null;
+            }
+        }
+
         public void AddVote(int choiceId, Vote newVote) {
             try {
                 var choice = _context.Choices.Include(c => c.Votes)
