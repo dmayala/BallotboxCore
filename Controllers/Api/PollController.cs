@@ -61,7 +61,7 @@ namespace Ballotbox.Controllers.Api
             var poll = _repository.GetPollById(pollId);
             
             if (poll != null) { 
-                var result = Mapper.Map<PollViewModel>(_repository.GetPollById(pollId));
+                var result = Mapper.Map<PollViewModel>(poll);
                 return Json(result);
             }
           
@@ -71,16 +71,18 @@ namespace Ballotbox.Controllers.Api
 
         [HttpGet]
         [Route("random")]
-        public JsonResult GetRandomPoll()
+        public async Task<JsonResult> GetRandomPoll()
         {
-            var poll = _repository.GetRandomPoll();
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            if (user != null) {
+                var poll = _repository.GetRandomPoll(user.Id);
 
-            if (poll != null)
-            {
-                var result = Mapper.Map<PollViewModel>(_repository.GetRandomPoll());
-                return Json(result);
+                if (poll != null)
+                {
+                    var result = Mapper.Map<PollViewModel>(poll);
+                    return Json(result);
+                }
             }
-
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed" });
         }

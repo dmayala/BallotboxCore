@@ -73,19 +73,25 @@ namespace Ballotbox.Database
             }
         }
 
-        public Poll GetRandomPoll()
+        public Poll GetRandomPoll(string userId)
         {
             try
             {
-                int toSkip = new Random().Next(0, _context.Polls.Count() - 1);
-                return _context.Polls.Include(p => p.Choices)
-                                     .OrderBy(r => Guid.NewGuid()).Skip(toSkip).Take(1).First();
+                var votedPolls = _context.Polls.Where(p => p.Choices.Any(
+                                            c => c.Votes.Any(v => v.User.Id == userId))
+                                         ).Select(p => p.Id).ToList();
 
+                var unvotedPolls = _context.Polls.Include(p => p.Choices)
+                                           .Where(p => !votedPolls.Contains(p.Id));
 
-            }
+                int toSkip = new Random().Next(0, unvotedPolls.Count() - 1);
+
+                return unvotedPolls.OrderBy(p => Guid.NewGuid()).Skip(toSkip).Take(1).First();
+            }﻿
+﻿
             catch (Exception ex)
             {
-                _logger.LogError("Could not get random poll from database", ex);
+                _﻿logger.LogError("Could not get random poll from database", ex);
                 return null;
             }
         }

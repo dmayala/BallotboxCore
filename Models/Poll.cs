@@ -11,6 +11,6 @@ namespace Ballotbox.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public BallotboxUser User { get; set; }
-        public ICollection<Choice> Choices { get; set; }
+        public virtual ICollection<Choice> Choices { get; set; }
     }
 }
