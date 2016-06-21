@@ -4,7 +4,6 @@ import { typeName, isActionType, Action, Reducer } from 'redux-typed';
 import { ActionCreator } from './';
 import * as _ from 'lodash';
 import { push } from 'react-router-redux'
-import * as cookie from 'react-cookie';
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -116,7 +115,6 @@ export const actionCreators = {
       .then(response => response.json())
       .then((data: IAuthResponse) => {
         if (data.status) { throw new Error(data.message); }  
-        cookie.save('bearer', data.token);
         dispatch(new SignupSuccess({ username: data.username, token: data.token }));
         dispatch(push('dashboard'));
       })
@@ -133,7 +131,6 @@ export const actionCreators = {
       })
       .then((response) => {
         let data: IAuthResponse = (response as any).data;
-        cookie.save('bearer', data.token);
         dispatch(new LoginUserSuccess({ username: data.username, token: data.token }));
         dispatch(push('dashboard'));
       })

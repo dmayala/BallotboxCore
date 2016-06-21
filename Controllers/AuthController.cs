@@ -56,11 +56,21 @@ namespace Ballotbox.Controllers
                     var loggedInUser = await _userManager.FindByNameAsync(user.UserName);
                     DateTime? expires = DateTime.UtcNow.AddDays(30);
                     var token = GetToken(loggedInUser, expires);
+                    Response.Cookies.Append(
+                        "bearer",
+                        token,
+                        new Microsoft.AspNetCore.Http.CookieOptions()
+                        {
+                            Path = "/",
+                            HttpOnly = true,
+                            Secure = false
+                        }
+                    );  
                     return Json(new { Username = loggedInUser.UserName, Token = token });
                 }
             }
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { StatusCode = Response.StatusCode, Message = "This username is already taken." });
+            return Json(new { StatusCode = Response.StatusCode, ModelState = ModelState.Values.SelectMany(v => v.Errors)});
 
         }
 
@@ -76,6 +86,16 @@ namespace Ballotbox.Controllers
                     var user = await _userManager.FindByNameAsync(model.Username);
                     DateTime? expires = DateTime.UtcNow.AddDays(30);
                     var token = GetToken(user, expires);
+                    Response.Cookies.Append(
+                        "bearer",
+                        token,
+                        new Microsoft.AspNetCore.Http.CookieOptions()
+                        {
+                            Path = "/",
+                            HttpOnly = true,
+                            Secure = false
+                        }
+                    );    
                     return Json(new { Username = user.UserName, Token = token });
                 }
                 else
