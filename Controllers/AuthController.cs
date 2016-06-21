@@ -85,7 +85,7 @@ namespace Ballotbox.Controllers
             }
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return Json(new { Message = "Failed", ModelState = ModelState.Values.SelectMany(v => v.Errors) });
+            return Json(new { StatusCode = Response.StatusCode, Message = "Failed", ModelState = ModelState.Values.SelectMany(v => v.Errors) });
         }
         
         [HttpPost]

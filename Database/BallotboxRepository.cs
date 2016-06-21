@@ -87,11 +87,11 @@ namespace Ballotbox.Database
                 int toSkip = new Random().Next(0, unvotedPolls.Count() - 1);
 
                 return unvotedPolls.OrderBy(p => Guid.NewGuid()).Skip(toSkip).Take(1).First();
-            }﻿
-﻿
+            }
+
             catch (Exception ex)
             {
-                _﻿logger.LogError("Could not get random poll from database", ex);
+                _logger.LogError("Could not get random poll from database", ex);
                 return null;
             }
         }
