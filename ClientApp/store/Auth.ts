@@ -145,7 +145,6 @@ export const actionCreators = {
     fetch('/auth/logout', { method: 'post' })
       .then(response => response.json())
       .then(() => { 
-        cookie.remove('bearer');
         dispatch(new LogoutUserComplete());
       });
       
