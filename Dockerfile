@@ -11,6 +11,6 @@ RUN bash -c "npm install -g bower gulp typings \
 		&& npm install --unsafe-perm=true"
 
 # Configure the listening port to 5000
-ENV ASPNETCORE_SERVER.URLS http://*:5000
+ENV ASPNETCORE_URLS http://*:5000
 
 ENTRYPOINT ["dotnet", "run"]
