@@ -142,7 +142,14 @@ export const actionCreators = {
   },
   
   logoutUser: (): ActionCreator => (dispatch, getState) => {
-    fetch('/auth/logout', { method: 'post' })
+    fetch('/auth/logout', {
+      method: 'post',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json'
+      },
+      credentials: 'same-origin',
+    })
       .then(response => response.json())
       .then(() => { 
         dispatch(new LogoutUserComplete());

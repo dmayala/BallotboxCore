@@ -4,7 +4,7 @@
 
 <div id="react-app" asp-prerender-module="ClientApp/boot-server"
      asp-prerender-webpack-config="webpack.config.js"
-     asp-prerender-hydrate-with=@ViewData>Loading...</div>
+     asp-prerender-data=@ViewData>Loading...</div>
 
 @section scripts {
     <script src="~/dist/main.js" asp-append-version="true"></script>

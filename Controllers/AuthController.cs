@@ -114,7 +114,7 @@ namespace Ballotbox.Controllers
                 await _signInManager.SignOutAsync();
             }
 
-            return Json(new {});
+            return Json(new { });
         }
 
         private string GetToken(IdentityUser user, DateTime? expires)
