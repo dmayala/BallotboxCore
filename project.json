@@ -29,8 +29,7 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "AutoMapper": "4.2.1",
-    "Microsoft.AspNetCore.ReactServices": "1.0.0-*",
-    "Microsoft.AspNetCore.NodeServices": "1.0.0-beta-000007",
+    "Microsoft.AspNetCore.SpaServices": "1.0.0-beta-000007",
     "Microsoft.IdentityModel.Tokens": "5.0.0",
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0"
   },

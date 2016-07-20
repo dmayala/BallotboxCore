@@ -10,25 +10,32 @@ namespace Ballotbox.Helpers
 {
     public static class HydratedPrerenderer
     {
-        private static Lazy<StringAsTempFile> nodeScript;
+        private static Lazy<StringAsTempFile> NodeScript;
 
         static HydratedPrerenderer()
         {
-            nodeScript = new Lazy<StringAsTempFile>(() => {
+            NodeScript = new Lazy<StringAsTempFile>(() => {
                 var script = ScriptReader.Read("./ClientApp/utils/prerenderer.js");
                 return new StringAsTempFile(script); // Will be cleaned up on process exit
             });
         }
 
-        public static async Task<RenderToStringResult> RenderToString(string applicationBasePath, INodeServices nodeServices, JavaScriptModuleExport bootModule, 
-                                                                      string requestAbsoluteUrl, string requestPathAndQuery, object hydrateData)
+        public static Task<RenderToStringResult> RenderToString(
+            string applicationBasePath,
+            INodeServices nodeServices,
+            JavaScriptModuleExport bootModule,
+            string requestAbsoluteUrl,
+            string requestPathAndQuery,
+            object customDataParameter)
         {
-            return await nodeServices.InvokeExport<RenderToStringResult>(nodeScript.Value.FileName, "renderToString",
+            return nodeServices.InvokeExportAsync<RenderToStringResult>(
+                NodeScript.Value.FileName,
+                "renderToString",
                 applicationBasePath,
                 bootModule,
                 requestAbsoluteUrl,
                 requestPathAndQuery,
-                hydrateData);
+                customDataParameter);
         }
     }
 

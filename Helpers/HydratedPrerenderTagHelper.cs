@@ -35,18 +35,18 @@ namespace Ballotbox.Helpers
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var request = this.ViewContext.HttpContext.Request;
+            var request = ViewContext.HttpContext.Request;
             var result = await HydratedPrerenderer.RenderToString(
-                applicationBasePath: this.applicationBasePath,
-                hydrateData: this.HydrateData,
-                nodeServices: this.nodeServices,
-                bootModule: new JavaScriptModuleExport(this.ModuleName)
+                this.applicationBasePath,
+                this.nodeServices,
+                new JavaScriptModuleExport(ModuleName)
                 {
-                    exportName = this.ExportName,
-                    webpackConfig = this.WebpackConfigPath
+                    ExportName = ExportName,
+                    WebpackConfig = WebpackConfigPath
                 },
-                requestAbsoluteUrl: UriHelper.GetEncodedUrl(request),
-                requestPathAndQuery: request.Path + request.QueryString.Value);
+                request.GetEncodedUrl(),
+                request.Path + request.QueryString.Value,
+                HydrateData);
             output.Content.SetHtmlContent(result.Html);
 
             // Also attach any specified globals to the 'window' object. This is useful for transferring

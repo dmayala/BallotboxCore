@@ -15,14 +15,14 @@ export default function (params: any): Promise<{ html: string }> {
         throw error;
       }
 
-      const options = params.options || {};
+      const data = params.data || {};
 
       // Build an instance of the application
       const store = configureStore();
 
       // Hydrate store with server data
-      if (options.username && options.token) {
-        let { username, token } = options;
+      if (data.username && data.token) {
+        let { username, token } = data;
         store.dispatch(new LoadUser({ username, token }));
       }
 
